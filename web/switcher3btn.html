@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .redButton.horizTranslate2 { -webkit-transition: -webkit-transform 0.1s linear; -webkit-transform: translateX(20px);}
+        .redButton.horizTranslate3 { -webkit-transition: -webkit-transform 0.1s linear; -webkit-transform: translateX(40px);}
+        .redButton.horizTranslate1 { -webkit-transition: -webkit-transform 0.1s linear; -webkit-transform: translateX(0px);}
+        #outerContainer{position:relative; width:111px; height:98px; background-color:#4A5B7E;}
+        #buttonContainer{background-color: #222D41; width:71px; height:28px; position:relative; left:20px; top:45px; border-radius:14px;}
+        .redButton{width:16px; height:16px; background-color:#DB3D2B; border-radius:8px; position:relative; top:6px; left:6px;}
+        #legendTextContainer{left:22px; display:inline-block;position:absolute; top:23px; color:#ffffff;font-family:Arial; font-size:10pt;text-align:center;}
+        .legendText{display:inline-block;width:20px; padding-bottom:33px; cursor:default; user-select: none;}
+        #message{border:1px solid #cccccc; display:inline-block; padding:4px; margin-top: 6px; font-family:Arial; font-size:10pt;}
+    </style>
+</head>
+<body>
+
+<div id="outerContainer">
+    <div id="buttonContainer">
+        <div class="redButton"></div>
+    </div>
+
+    <div id="legendTextContainer">
+        <div class="legendText" onclick="go_to_1()">1</div>
+        <div class="legendText" onclick="go_to_2()">2</div>
+        <div class="legendText" onclick="go_to_3()">3</div>
+    </div>
+</div>
+
+</body>
+<script>
+    let toggleSwitch = document.getElementsByClassName('redButton')[0]
+
+    function go_to_1() {
+        toggleSwitch.classList.add('horizTranslate1');
+        toggleSwitch.classList.remove('horizTranslate2');
+        toggleSwitch.classList.remove('horizTranslate3');
+        document.getElementById("outerContainer").style.backgroundColor = "#E5E5E5"
+        document.getElementById("buttonContainer").style.backgroundColor = "#D3CCCA"
+        document.getElementById("legendTextContainer").style.color = "#222222"
+    }
+
+    function go_to_2() {
+        toggleSwitch.classList.add('horizTranslate2');
+        toggleSwitch.classList.remove('horizTranslate3');
+        toggleSwitch.classList.remove('horizTranslate1');
+        document.getElementById("outerContainer").style.backgroundColor = "#E5E5E5"
+        document.getElementById("buttonContainer").style.backgroundColor = "#D3CCCA"
+        document.getElementById("legendTextContainer").style.color = "#222222"
+    }
+
+    function go_to_3() {
+        toggleSwitch.classList.add('horizTranslate3');
+        toggleSwitch.classList.remove('horizTranslate2');
+        toggleSwitch.classList.remove('horizTranslate1');
+        document.getElementById("outerContainer").style.backgroundColor = "#E5E5E5"
+        document.getElementById("buttonContainer").style.backgroundColor = "#D3CCCA"
+        document.getElementById("legendTextContainer").style.color = "#222222"
+
+    }
+
+
+</script>
+</html>

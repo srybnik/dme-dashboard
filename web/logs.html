@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Логи</title>
+    <meta charset="utf-8">
+    <style>
+        .container {
+            padding: 1rem;
+            margin: 1rem;
+        }
+
+        .table-scroll {
+            /*width:100%; */
+            display: block;
+            empty-cells: show;
+
+            /* Decoration */
+            border-spacing: 0;
+            border: 1px solid;
+        }
+
+        .table-scroll thead {
+            background-color: #f1f1f1;
+            position: relative;
+            display: block;
+            width: 100%;
+            overflow-y: scroll;
+        }
+
+        .table-scroll tbody {
+            /* Position */
+            display: block;
+            position: relative;
+            width: 100%;
+            overflow-y: scroll;
+            /* Decoration */
+            border-top: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .table-scroll tr {
+            width: 100%;
+            display: flex;
+        }
+
+        .table-scroll td, .table-scroll th {
+            flex-basis: 100%;
+            flex-grow: 2;
+            display: block;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        /* Other options */
+
+        .table-scroll.small-first-col td:first-child,
+        .table-scroll.small-first-col th:first-child {
+            flex-basis: 20%;
+            flex-grow: 1;
+        }
+
+        .table-scroll tbody tr:nth-child(2n) {
+            background-color: rgba(130, 130, 170, 0.1);
+        }
+
+        .body-half-screen {
+            max-height: 50vh;
+        }
+
+        .small-col {
+            flex-basis: 10%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Лог изменений</h1>
+
+    <div>
+        <label>С</label>
+        <input type="date" id="startDate" name="trip-start">
+        <label>по</label>
+        <input type="date" id="endDate" name="trip-start">
+        <button type="button" onclick="GetData()">Заполнить</button>
+    </div>
+    <p/>
+
+    <table id="myTable" class="table-scroll small-first-col">
+        <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Сообщение</th>
+        </tr>
+        </thead>
+        <tbody id="tbody" class="body-half-screen">
+
+        </tbody>
+    </table>
+
+</div>
+<script>
+    window.addEventListener("load", function (evt) {
+        var startDate = document.getElementById("startDate");
+        var endDate = document.getElementById("endDate");
+        startDate.setAttribute("value", new Date(Date.now() - 86400000 * 2).toISOString().slice(0, 10));
+        endDate.setAttribute("value", new Date().toISOString().slice(0, 10));
+        GetData()
+    });
+
+    function GetData() {
+        var table = document.getElementById("tbody");
+
+        var startDate = document.getElementById("startDate");
+        var endDate = document.getElementById("endDate");
+
+        fetch("http://{{.}}/logs/" + startDate.value + "/" + endDate.value)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                table.innerHTML = data
+            })
+
+    }
+</script>
+</body>
+</html>

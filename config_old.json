@@ -1,0 +1,615 @@
+{
+  "timeout": "15s",
+  "port": ":80",
+  "controls": [
+    {
+      "elementID": "Led1",
+      "deviceID": 1,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led2",
+      "deviceID": 1,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led3",
+      "deviceID": 1,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led4",
+      "deviceID": 1,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led5",
+      "deviceID": 1,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led6",
+      "deviceID": 1,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led7",
+      "deviceID": 1,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led8",
+      "deviceID": 1,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led9",
+      "deviceID": 1,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led10",
+      "deviceID": 1,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led11",
+      "deviceID": 1,
+      "pinID": 10,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led12",
+      "deviceID": 1,
+      "pinID": 11,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led13",
+      "deviceID": 1,
+      "pinID": 12,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led14",
+      "deviceID": 1,
+      "pinID": 13,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led15",
+      "deviceID": 1,
+      "pinID": 14,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led16",
+      "deviceID": 1,
+      "pinID": 15,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led17",
+      "deviceID": 2,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led18",
+      "deviceID": 2,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led19",
+      "deviceID": 2,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led20",
+      "deviceID": 2,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led21",
+      "deviceID": 2,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led22",
+      "deviceID": 3,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led23",
+      "deviceID": 3,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led24",
+      "deviceID": 3,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led25",
+      "deviceID": 3,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led27",
+      "deviceID": 3,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led28",
+      "deviceID": 3,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led29",
+      "deviceID": 3,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led30",
+      "deviceID": 3,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led32",
+      "deviceID": 3,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led33",
+      "deviceID": 3,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led34",
+      "deviceID": 3,
+      "pinID": 10,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led35",
+      "deviceID": 3,
+      "pinID": 11,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led37",
+      "deviceID": 3,
+      "pinID": 12,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led38",
+      "deviceID": 3,
+      "pinID": 13,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led39",
+      "deviceID": 3,
+      "pinID": 14,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led40",
+      "deviceID": 3,
+      "pinID": 15,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led42",
+      "deviceID": 4,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led43",
+      "deviceID": 4,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led44",
+      "deviceID": 4,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led45",
+      "deviceID": 4,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led47",
+      "deviceID": 4,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led48",
+      "deviceID": 4,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led49",
+      "deviceID": 4,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led50",
+      "deviceID": 4,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led52",
+      "deviceID": 4,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led53",
+      "deviceID": 4,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led54",
+      "deviceID": 4,
+      "pinID": 10,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led55",
+      "deviceID": 4,
+      "pinID": 11,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led57",
+      "deviceID": 4,
+      "pinID": 12,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led58",
+      "deviceID": 4,
+      "pinID": 13,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led59",
+      "deviceID": 4,
+      "pinID": 14,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led60",
+      "deviceID": 4,
+      "pinID": 15,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led62",
+      "deviceID": 2,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led63",
+      "deviceID": 2,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led64",
+      "deviceID": 2,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led65",
+      "deviceID": 2,
+      "pinID": 12,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led67",
+      "deviceID": 5,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led68",
+      "deviceID": 5,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led69",
+      "deviceID": 5,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led70",
+      "deviceID": 5,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led71",
+      "deviceID": 5,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led72",
+      "deviceID": 5,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led73",
+      "deviceID": 5,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led74",
+      "deviceID": 5,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led75",
+      "deviceID": 5,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led76",
+      "deviceID": 5,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led77",
+      "deviceID": 5,
+      "pinID": 10,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led78",
+      "deviceID": 5,
+      "pinID": 11,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led80",
+      "deviceID": 5,
+      "pinID": 12,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led81",
+      "deviceID": 5,
+      "pinID": 13,
+      "isDisable": false,
+      "type": 1
+    },
+    {
+      "elementID": "Led82",
+      "deviceID": 5,
+      "pinID": 14,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Led83",
+      "deviceID": 5,
+      "pinID": 15,
+      "isDisable": false,
+      "type": 3
+    },
+    {
+      "elementID": "Checkbox1",
+      "deviceID": 0,
+      "pinID": 0,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox2",
+      "deviceID": 0,
+      "pinID": 1,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox3",
+      "deviceID": 0,
+      "pinID": 2,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox4",
+      "deviceID": 0,
+      "pinID": 3,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox5",
+      "deviceID": 0,
+      "pinID": 4,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox6",
+      "deviceID": 0,
+      "pinID": 5,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox7",
+      "deviceID": 0,
+      "pinID": 6,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox8",
+      "deviceID": 0,
+      "pinID": 7,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox9",
+      "deviceID": 0,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "Checkbox10",
+      "deviceID": 0,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 2
+    },
+    {
+      "elementID": "LedVPP1",
+      "deviceID": 2,
+      "pinID": 8,
+      "isDisable": false,
+      "type": 5
+    },
+    {
+      "elementID": "LedVPP2",
+      "deviceID": 2,
+      "pinID": 10,
+      "isDisable": false,
+      "type": 5
+    },
+    {
+      "elementID": "LedVPP3",
+      "deviceID": 2,
+      "pinID": 9,
+      "isDisable": false,
+      "type": 5
+    },
+    {
+      "elementID": "LedVPP4",
+      "deviceID": 2,
+      "pinID": 11,
+      "isDisable": false,
+      "type": 5
+    }
+  ]
+}

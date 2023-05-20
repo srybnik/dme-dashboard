@@ -1,0 +1,32 @@
+
+.menu {
+    display: block;
+    background-color: white;
+    padding: 20px 0px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 20px lightgrey;
+    position: absolute;
+    transform-origin: center;
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0);
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.menu.show {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: top left;
+}
+
+.menu-item {
+    display: block;
+    padding: 5px 10px;
+    transition: 0.1s;
+    color: #666;
+}
+
+.menu-item:hover {
+    background-color: #cdcccc;
+    cursor: pointer;
+}

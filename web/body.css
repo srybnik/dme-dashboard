@@ -1,0 +1,28 @@
+body {
+    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
+    color: #404040;
+    background: #ffffff;
+}
+
+hr {
+    border: none;
+    background-color: #565656;
+    height: 2px;
+}
+
+.container {
+    zoom: 1;
+    /*margin-left: 40px;*/
+    margin: inherit;
+    display: grid;
+}
+.frame {
+    border: 2px solid #999595;
+    border-radius: 7px;
+}
+
+.header {
+    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
+    font-size: xx-large;
+    margin: auto;
+}

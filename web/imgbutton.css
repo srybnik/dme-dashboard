@@ -1,0 +1,23 @@
+.img {
+    border-radius: 50%;
+    background: #e5e9e5;
+    /*background: #f85555;*/
+}
+
+.img:hover {
+    background-color: #cdcccc
+}
+
+.img:active {
+    /*background-color: #6cf855;*/
+    transform: translateY(1px);
+}
+
+.imgred {
+    border-radius: 50%;
+    background: #f85555;
+}
+
+.imgred:hover {
+    background-color: #c40000
+}

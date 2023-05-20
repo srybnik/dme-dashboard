@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="static/icon.jpg">
+    <title>DME-Dashboard</title>
+    <link href="static/body.css" rel="stylesheet" type="text/css">
+    <link href="static/menu.css" rel="stylesheet" type="text/css">
+    <link href="static/switch.css" rel="stylesheet" type="text/css">
+    <link href="static/imgbutton.css" rel="stylesheet" type="text/css">
+    <link href="static/div.css" rel="stylesheet" type="text/css">
+    <link href="static/grid.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="wrapper">
+    <img id="buzzer" width="80px" height="80px" alt="Avatar" class="img" src="static/buzzer.png"/>
+    <style type="text/css">
+        /*.tg  {border-spacing:0}*/
+        /*.tg td{border-style:solid;border-width:1px}*/
+        .tg .tg-0lax {
+            vertical-align: top;
+            width: 40px;
+            padding: 5px;
+        }
+
+        .tg .tg-0lax-p {
+            vertical-align: text-top;
+            width: 60px;
+            padding-top: 20px;
+            padding-left: 30px;
+        }
+
+        .timer {
+            text-align: right;
+            padding-top: 20px;
+            padding-right: 20px;
+            font-size: 20px;
+        }
+    </style>
+    <table class="tg">
+        <thead>
+        <tr>
+            <td class="tg-0lax-p" rowspan="2">
+                <div class="werheader">ВПП-1 </div>
+            </td>
+            <td class="tg-0lax">
+                <div id="LedVPP1" class="white">14R</div>
+            </td>
+            <td class="tg-0lax-p" rowspan="2">
+                <div class="werheader">ВПП-Ц</div>
+            </td>
+            <td class="tg-0lax">
+                <div id="LedVPP2" class="white">14L</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="tg-0lax">
+                <div id="LedVPP3" class="white">32L</div>
+            </td>
+            <td class="tg-0lax">
+                <div id="LedVPP4" class="white">32R</div>
+            </td>
+        </tr>
+        </thead>
+    </table>
+    <div id="timer" class="timer"></div>
+</div>
+<div class="container">
+    <div class="frame a">
+        <div class="mydivheader">ВПП - 1</div>
+        <hr>
+        <table cellpadding="20px">
+            <tr height="470px">
+                <td height="150px" width="100px" valign="top">
+                    <div id="div1" class="mydiv">
+                        <div id="mydiv1header" class="mydivheader">ОПРС 14R</div>
+                        <p>
+                        <div id="Led1" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led2" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+
+                <td height="150px" width="100px" valign="top">
+                    <div id="div2" class="mydiv">
+                        <div id="div2header" class="mydivheader">КРМ 32L</div>
+                        <p>
+                        <div id="Led3" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led4" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div3" class="mydiv">
+                        <div id="div3header" class="mydivheader">ГРМ 14R</div>
+                        <p>
+                        <div id="Led5" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led6" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div4" class="mydiv">
+                        <div id="div4header" class="mydivheader">ГРМ 32L</div>
+                        <p>
+                        <div id="Led7" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led8" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div5" class="mydiv">
+                        <div id="div5header" class="mydivheader">DME 32L</div>
+                        <p>
+                        <div id="Led9" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led10" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div6" class="mydiv">
+                        <div id="div6header" class="mydivheader">КРМ 14R</div>
+                        <p>
+                        <div id="Led11" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led12" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div7" class="mydiv">
+                        <div id="div7header" class="mydivheader">ОПРС 32L</div>
+                        <p>
+                        <div id="Led13" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led14" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div8" class="mydiv">
+                        <div id="div8header" class="mydivheader">DVOR DME</div>
+                        <p>
+                        <div id="Led15" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led16" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div9" class="mydiv">
+                        <div id="div9header" class="mydivheader">ОЛП 1</div>
+                        <p>
+                        <div id="Led17" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led18" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led19" class="white" style="border-radius: 15px">
+                            ИБП Тревога
+                        </div>
+                        <p>
+                        <div id="Led20" class="white" style="border-radius: 15px">
+                            Нагрузка на БАЙПАС
+                        </div>
+                        <p>
+                        <div id="Led21" class="white" style="border-radius: 15px">
+                            Работа от АКБ
+                        </div>
+                        <p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="frame c">
+        <div class="mydivheader">ВПП - Ц</div>
+        <hr>
+        <table cellpadding="20px">
+            <tr height="500px">
+                <td height="100px" width="100px" valign="top">
+                    <div id="div10" class="mydiv">
+                        <div id="div10header" class="mydivheader">ОПРС 14L</div>
+                        <p>
+                        <div id="Led22" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led23" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led24" class="white">ДГ</div>
+                        <p>
+                        <div id="Led25" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label1" class="switch">
+                            <input id="Checkbox1" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div11" class="mydiv">
+                        <div id="div11header" class="mydivheader">КРМ 32R</div>
+                        <p>
+                        <div id="Led27" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led28" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led29" class="white">ДГ</div>
+                        <p>
+                        <div id="Led30" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label2" class="switch">
+                            <input id="Checkbox2" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div12" class="mydiv">
+                        <div id="div12header" class="mydivheader">ГРМ 14L</div>
+                        <p>
+                        <div id="Led32" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led33" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led34" class="white">ДГ</div>
+                        <p>
+                        <div id="Led35" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label3" class="switch">
+                            <input id="Checkbox3" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div13" class="mydiv">
+                        <div id="div13header" class="mydivheader">ГРМ 32R</div>
+                        <p>
+                        <div id="Led37" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led38" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led39" class="white">ДГ</div>
+                        <p>
+                        <div id="Led40" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label4" class="switch">
+                            <input id="Checkbox4" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div14" class="mydiv">
+                        <div id="div14header" class="mydivheader">КРМ 14L</div>
+                        <p>
+                        <div id="Led42" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led43" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led44" class="white">ДГ</div>
+                        <p>
+                        <div id="Led45" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label5" class="switch">
+                            <input id="Checkbox5" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div15" class="mydiv">
+                        <div id="div15header" class="mydivheader">ОПРС 32R</div>
+                        <p>
+                        <div id="Led47" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led48" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led49" class="white">ДГ</div>
+                        <p>
+                        <div id="Led50" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label6" class="switch">
+                            <input id="Checkbox6" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div16" class="mydiv">
+                        <div id="div16header" class="mydivheader">АППЦ &nbsp;</div>
+                        <p>
+                        <div id="Led52" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led53" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led54" class="white">ДГ</div>
+                        <p>
+                        <div id="Led55" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label7" class="switch">
+                            <input id="Checkbox7" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div17" class="mydiv">
+                        <div id="div17header" class="mydivheader">МВРЛ &nbsp;</div>
+                        <p>
+                        <div id="Led57" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led58" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led59" class="white">ДГ</div>
+                        <p>
+                        <div id="Led60" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label8" class="switch">
+                            <input id="Checkbox8" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div18" class="mydiv">
+                        <div id="div18header" class="mydivheader">ОЛП 2</div>
+                        <p>
+                        <div id="Led62" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led63" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led64" class="white">ДГ</div>
+                        <p>
+                        <div id="Led65" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label9" class="switch">
+                            <input id="Checkbox9" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="frame b">
+        <div class="mydivheader">Объекты РТОП</div>
+        <hr>
+        <table cellpadding="20px">
+            <tr height="450px">
+                <td height="100px" width="100px" valign="top">
+                    <div id="div19" class="mydiv">
+                        <div id="div19header" class="mydivheader">&nbsp;АРП &nbsp;<br>&nbsp;</div>
+                        <p>
+                        <div id="Led67" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led68" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div20" class="mydiv">
+                        <div id="div20header" class="mydivheader">ВCДП &nbsp;</div>
+                        <p>
+                        <div id="Led69" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led70" class="white">Фид. 2</div>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div21" class="mydiv">
+                        <div id="div21heasder" class="mydivheader">РЕЗ КДП</div>
+                        <p>
+                        <div id="Led71" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led72" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led73" class="white" style="border-radius: 15px">
+                            АППЦ >26°
+                        </div>
+                        <p>
+                        <div id="Led74" class="white" style="border-radius: 15px">
+                            УВД <br>
+                            >30°
+                        </div>
+                        <p>
+                        <div id="Led75" class="white" style="border-radius: 15px">
+                            Люк 1 откр.
+                        </div>
+                        <p>
+                        <div id="Led76" class="white" style="border-radius: 15px">
+                            Люк 2 откр.
+                        </div>
+                        <p>
+                        <div id="Led77" class="white">ДГ</div>
+                        <p>
+                        <div id="Led78" class="white">Авария ДГ</div>
+                        <p>Выкл ДГ</p>
+                        <label id="label10" class="switch">
+                            <input id="Checkbox10" type="checkbox" unchecked>
+                            <span class="slider round"></span>
+                        </label>
+                        <p>
+                    </div>
+                </td>
+                <td height="100px" width="100px" valign="top">
+                    <div id="div22" class="mydiv">
+                        <div id="div22header" class="mydivheader">АРЛК ЛИРА</div>
+                        <p>
+                        <div id="Led80" class="white">Фид. 1</div>
+                        <p>
+                        <div id="Led81" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led82" class="white">ДГ</div>
+                        <p>
+                        <div id="Led83" class="white">Авария ДГ</div>
+                        <p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<ul id="menu" class="menu" style="position: absolute">
+    <div id="menuLedName" align="center"></div>
+    <hr>
+    <li class="menu-item"><input id="checkboxLedOn" type="checkbox"/>Используется</li>
+    <li class="menu-item"><input id="checkboxLedOff" type="checkbox"/>Не используется</li>
+</ul>
+
+
+<audio id="Signal">
+    <source src="static/sounds.mp3">
+</audio>
+
+<script>
+    window.addEventListener("load", function (evt) {
+        var ws = new WebSocket("ws://{{.}}/ws");
+        ws.onmessage = function (evt) {
+            render(evt.data)
+        }
+        ws.onerror = function (evt) {
+            console.error("ERROR: " + evt.data)
+        }
+        ws.onclose = function (evt) {
+            console.error("ERROR CLOSED: " + evt.data)
+            document.body.style.backgroundColor = "#f34949";
+        }
+
+        function wsSend(elementID, controlType, isChecked) {
+            ws.send(JSON.stringify({elementID: elementID, controlType: controlType, isChecked: isChecked}));
+        }
+
+        function render(str) {
+            // console.log(str)
+            obj = JSON.parse(str);
+            let elmnt = document.getElementById(obj.elementID)
+            if (elmnt && obj.controlType != 2) {
+                elmnt.className = obj.color
+            }
+            if (elmnt && obj.controlType == 2) {
+                elmnt.checked = obj.isChecked
+            }
+            if (elmnt && obj.controlType == 6) {
+                elmnt.textContent = obj.value
+                elmnt.className = "timer"
+            }
+            if (elmnt && obj.controlType == 4) {
+                if (obj.color == "img") {
+                    stopSignal();
+                } else {
+                    startSignal();
+                }
+            }
+        }
+
+
+        document.oncontextmenu = function () {
+            return false;
+        }
+        document.onclick = function () {
+            menu = document.getElementById('menu')
+            menu.classList.remove('show')
+        }
+        document.getElementById("buzzer").onclick = function () {
+            // console.log(this)
+            wsSend("buzzer", 4, false);
+        };
+
+        document.getElementById("checkboxLedOn").onchange = function () {
+            if (this.checked) {
+                contextmenuSet(document.getElementById('menuLedName').currentElementID, !this.checked)
+            }
+        };
+        document.getElementById("checkboxLedOff").onchange = function () {
+            if (this.checked) {
+                contextmenuSet(document.getElementById('menuLedName').currentElementID, this.checked)
+            }
+        };
+
+        //////////////////////////
+        for (var i = 1; i <= 91; i++) {
+            elmnt = document.getElementById("Led" + i)
+            if (elmnt) {
+                elmnt.oncontextmenu = function () {
+                    contextmenu(event, this.id);
+                }
+            }
+        }
+        for (var i = 1; i <= 10; i++) {
+            elmnt = document.getElementById("label" + i)
+            if (elmnt) {
+                elmnt.oncontextmenu = function () {
+                    contextmenu(event, this.childNodes[1].id)
+                }
+            }
+        }
+        for (var i = 1; i <= 4; i++) {
+            elmnt = document.getElementById("LedVPP" + i)
+            if (elmnt) {
+                elmnt.oncontextmenu = function () {
+                    contextmenu(event, this.id);
+                }
+            }
+        }
+        // for (var i = 1; i <= 2; i++) {
+        //     elmnt = document.getElementById("VPP" + i)
+        //     if (elmnt) {
+        //         elmnt.oncontextmenu = function () {
+        //             contextmenu(event, this.id)
+        //         }
+        //     }
+        // }
+
+        function contextmenu(evt, elementID) {
+            fetch("http://{{.}}/element/" + elementID)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    // console.log(currentElementID)
+                    obj = JSON.parse(data)
+                    document.getElementById('menuLedName').currentElementID = elementID
+                    document.getElementById('menuLedName').textContent = obj.name
+                    document.getElementById('checkboxLedOn').checked = !obj.isDisable
+                    document.getElementById('checkboxLedOff').checked = obj.isDisable
+
+                    evt.preventDefault();
+                    menu = document.getElementById('menu')
+                    menu.style.marginLeft = (evt.clientX - 10) + "px";
+                    menu.style.marginTop = (evt.clientY - 1245) + "px";
+                    menu.classList.add('show')
+                })
+        }
+
+        function contextmenuSet(elementID, isDisable) {
+            fetch("http://{{.}}/element/" + elementID + "?isDisable=" + isDisable, {method: 'PUT'})
+        }
+
+        for (var i = 1; i <= 10; i++) {
+            elmnt = document.getElementById("Checkbox" + i)
+            if (elmnt) {
+                elmnt.onchange = function () {
+                    // console.log(this.id, this.checked);
+                    wsSend(this.id, 2, this.checked)
+                }
+            }
+        }
+        for (var i = 1; i <= 22; i++) {
+            dragElement(document.getElementById("div" + i));
+        }
+
+
+        function dragElement(elmnt) {
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            mydiv = document.getElementById(elmnt.id + "header");
+            if (mydiv) {
+                mydiv.onmousedown = dragMouseDown;
+            } else {
+                elmnt.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        function startSignal() {
+            var s = document.getElementById("Signal");
+            s.play()
+        }
+
+        function stopSignal() {
+            var s = document.getElementById("Signal");
+            s.pause()
+            s.load()
+        }
+
+        async function ping() {
+            try {
+                const c = new AbortController();
+                const id = setTimeout(() => c.abort(), 2000);
+                const r = await fetch("http://{{.}}/ping", {signal: c.signal});
+                clearTimeout(id);
+            } catch (err) {
+                console.error("ERROR PING: " + err)
+                document.body.style.backgroundColor = "#f34949";
+            }
+        }
+
+        setInterval(ping, 5000)
+
+        // function beep(duration) {
+        //     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        //     var oscillator = audioCtx.createOscillator();
+        //
+        //     oscillator.type = 'triangle';
+        //     //oscillator.type = "sine";
+        //     oscillator.frequency.setValueAtTime(3000, audioCtx.currentTime); // value in hertz
+        //     oscillator.connect(audioCtx.destination);
+        //
+        //     if (oscillator.start) oscillator.start();
+        //
+        //     setTimeout(function () {
+        //         if (oscillator.stop) oscillator.stop();
+        //
+        //     }, duration);
+        //
+        // }
+    });
+</script>
+</body>
+</html>
