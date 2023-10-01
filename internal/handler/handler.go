@@ -49,7 +49,7 @@ func (h *Handler) HomePage(ctx echo.Context) error {
 }
 
 func (h *Handler) LogPage(ctx echo.Context) error {
-	//t, err := template.ParseFiles("/home/dme-dashboard/web/logs.html")
+	//t, err := template.ParseFiles("/home/dme-dashboard/web/logs.html")e
 	t, err := template.ParseFiles("./web/logs.html")
 	if err != nil {
 		return err

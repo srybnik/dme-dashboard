@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Настройки</title>
+    <meta charset="utf-8">
+    <link href="config.css" rel="stylesheet" type="text/css">
+    <script src="config.js"></script>
+</head>
+<body>
+<div class="container">
+
+    <div class="control-line">
+        <h2>Платы</h2>
+    </div>
+    <table id="boards" class="table table-boards">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>PA0</th>
+            <th>PA1</th>
+            <th>PA2</th>
+            <th>PA3</th>
+            <th>PA4</th>
+            <th>PA5</th>
+            <th>PA6</th>
+            <th>PA7</th>
+            <th>PB0</th>
+            <th>PB1</th>
+            <th>PB2</th>
+            <th>PB3</th>
+            <th>PB4</th>
+            <th>PB5</th>
+            <th>PB6</th>
+            <th>PB7</th>
+        </tr>
+        </thead>
+        <tbody id="boards-body">
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+
+    <div class="control-line">
+        <h2>Объекты</h2>
+        <button class="btn" onclick="addNewObjectRow()">Добавить</button>
+    </div>
+    <table id="objects" class="table table-objects">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Панель</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="objects-body">
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <br>
+    <div class="control-line">
+        <h2>Компоненты</h2>
+        <button class="btn" onclick="addNewComponentRow()">Добавить</button>
+    </div>
+    <table id="components" class="table table-components">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Тип</th>
+            <th>Объект</th>
+            <th>Плата</th>
+            <th>Пин</th>
+            <th>INPUT/OUTPUT</th>
+            <th>Используется</th>
+            <th>Инверсия</th>
+            <th>Задержка/сек</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="components-body">
+        </tbody>
+    </table>
+
+
+</div>
+<script>
+
+</script>
+</body>
+</html>

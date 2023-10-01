@@ -1,0 +1,82 @@
+.container {
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.table-boards {
+    empty-cells: show;
+    border-spacing: 0;
+    border: 1px solid;
+    width: 1000px;
+}
+
+.table-objects {
+    empty-cells: show;
+    border-spacing: 0;
+    border: 1px solid;
+    width: 500px;
+}
+
+.table-components {
+    empty-cells: show;
+    border-spacing: 0;
+    border: 1px solid;
+    width: 1800px;
+}
+
+.table thead {
+    background-color: #f1f1f1;
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.table tbody {
+    display: block;
+    position: relative;
+    width: 100%;
+    /*overflow-y: scroll;*/
+    /* Decoration */
+    /*border-top: 1px solid rgba(0, 0, 0, 0.2);*/
+}
+
+.table tr {
+    /*width: 100%;*/
+    display: flex;
+}
+
+.table th {
+    flex-basis: 100%;
+    flex-grow: 2;
+    /*display: block;*/
+    padding: 0.2rem;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.td-center {
+    flex-basis: 100%;
+    flex-grow: 2;
+    /*display: block;*/
+    padding: 0.2rem;
+    text-align: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.td-right {
+    flex-basis: 100%;
+    flex-grow: 2;
+    padding: 0.2rem;
+    text-align: right;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+select, input {padding: 1px; border: 1px}
+
+.control-line{display: flex}
+
+.btn {padding: 1px 10px; margin: 22px;border: 1px solid #727272;border-radius: 4px;color: #000000;font-size: 16px;background-color: #dcdcdc;cursor: pointer; outline: none; height: 25px}
+.btn:hover {opacity: 0.8;}
+.btn:active {opacity: 0.6;}
+
+.btntbl {text-align: right}
