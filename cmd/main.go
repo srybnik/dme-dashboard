@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/srybnik/dme-dashboard/internal/databases"
-	"github.com/srybnik/dme-dashboard/internal/repo"
+	"github.com/srybnik/dme-dashboard/internal/buzzer"
+	"github.com/srybnik/dme-dashboard/internal/mcp"
+	"github.com/srybnik/dme-dashboard/internal/service"
 	"net/http"
-	"net/http/pprof"
 	"os"
 	"os/signal"
 	"syscall"
@@ -23,42 +23,42 @@ import (
 
 func main() {
 	log := zerolog.New(os.Stdout).With().Timestamp().Logger()
-	//cfg, err := config.NewConfig("/home/dme-dashboard/config.json")
-	cfg, err := config.NewConfig("./config.json")
+	cfg, err := config.NewConfig("/home/dme-dashboard/config.json")
+	//cfg, err := config.NewConfig("./config.json")
 	if err != nil {
 		log.Fatal().Msgf("Config error: %v", err)
 	}
 
 	//db, err := databases.New("sqlite3", "/home/dme-dashboard/repo.db")
-	db, err := databases.New("sqlite3", "./repo.db")
-	if err != nil {
-		log.Fatal().Msgf("DB error: %v", err)
-	}
-	logRepo := repo.New(db)
-	logRepo.Event("Старт 🚀")
-	defer logRepo.Event("Завершение ☹️")
-	//
-	//mcpManager, err := mcp.New()
+	////db, err := databases.New("sqlite3", "./repo.db")
 	//if err != nil {
-	//	log.Fatal().Msgf("MCP error: %v", err)
+	//	log.Fatal().Msgf("DB error: %v", err)
 	//}
-	//defer mcpManager.CloseAll()
-	//
-	//buz := buzzer.New()
-	//buzzerErrors := make(chan error, 1)
-	//go func() {
-	//	log.Info().Msgf("Start buzzer")
-	//	buzzerErrors <- buz.Start()
-	//}()
+	//logRepo := repo.New(db)
+	//logRepo.Event("Старт 🚀")
+	//defer logRepo.Event("Завершение ☹️")
+
+	mcpManager, err := mcp.New()
+	if err != nil {
+		log.Fatal().Msgf("MCP error: %v", err)
+	}
+	defer mcpManager.CloseAll()
+
+	buz := buzzer.New()
+	buzzerErrors := make(chan error, 1)
+	go func() {
+		log.Info().Msgf("Start buzzer")
+		buzzerErrors <- buz.Start()
+	}()
 
 	controlManager := controls.New(cfg)
-	apiHandler := handler.New(controlManager, logRepo)
-	//srv := service.New(controlManager, apiHandler, mcpManager, buz, logRepo)
-	//serviceErrors := make(chan error, 1)
-	//go func() {
-	//	log.Info().Msgf("Start service")
-	//	serviceErrors <- srv.Start()
-	//}()
+	apiHandler := handler.New(controlManager)
+	srv := service.New(controlManager, apiHandler, mcpManager, buz)
+	serviceErrors := make(chan error, 1)
+	go func() {
+		log.Info().Msgf("Start service")
+		serviceErrors <- srv.Start()
+	}()
 
 	router := echo.New()
 	router.Use(middleware.Recover())
@@ -71,8 +71,8 @@ func main() {
 	router.GET("/ws", apiHandler.Websocket)
 	router.GET("/element/:elementID", apiHandler.GetElementProperties)
 	router.PUT("/element/:elementID", apiHandler.SetElementProperties)
-	//router.Static("/static", "/home/dme-dashboard/web")
-	router.Static("/static", "./web")
+	router.Static("/static", "/home/dme-dashboard/web")
+	//router.Static("/static", "./web")
 	router.GET("/ping", func(ctx echo.Context) error {
 		return ctx.NoContent(http.StatusNoContent)
 	})
@@ -80,18 +80,18 @@ func main() {
 	router.GET("/logs/:startDate/:endDate", apiHandler.Logs)
 
 	//Debug
-	router.GET("/debug/pprof/profile", func(ctx echo.Context) error {
-		pprof.Profile(ctx.Response(), ctx.Request())
-		return nil
-	})
-	router.GET("/debug/pprof/heap", func(ctx echo.Context) error {
-		pprof.Handler("heap").ServeHTTP(ctx.Response(), ctx.Request())
-		return nil
-	})
-	router.GET("/debug/pprof/goroutine", func(ctx echo.Context) error {
-		pprof.Handler("goroutine").ServeHTTP(ctx.Response(), ctx.Request())
-		return nil
-	})
+	//router.GET("/debug/pprof/profile", func(ctx echo.Context) error {
+	//	pprof.Profile(ctx.Response(), ctx.Request())
+	//	return nil
+	//})
+	//router.GET("/debug/pprof/heap", func(ctx echo.Context) error {
+	//	pprof.Handler("heap").ServeHTTP(ctx.Response(), ctx.Request())
+	//	return nil
+	//})
+	//router.GET("/debug/pprof/goroutine", func(ctx echo.Context) error {
+	//	pprof.Handler("goroutine").ServeHTTP(ctx.Response(), ctx.Request())
+	//	return nil
+	//})
 
 	serverErrors := make(chan error, 1)
 	go func() {
@@ -106,10 +106,10 @@ func main() {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 	select {
-	//case err := <-buzzerErrors:
-	//	log.Error().Msgf("Error buzzer: %v", err)
-	//case err := <-serviceErrors:
-	//	log.Error().Msgf("Error service: %v", err)
+	case err := <-buzzerErrors:
+		log.Error().Msgf("Error buzzer: %v", err)
+	case err := <-serviceErrors:
+		log.Error().Msgf("Error service: %v", err)
 	case err := <-serverErrors:
 		log.Error().Msgf("Error starting server: %v", err)
 	case <-osSignals:

@@ -10,9 +10,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
-	"github.com/openlyinc/civil"
 	"github.com/srybnik/dme-dashboard/internal/controls"
-	"github.com/srybnik/dme-dashboard/internal/repo"
 )
 
 type сonnectionPool struct {
@@ -25,23 +23,23 @@ type Handler struct {
 	msgChan        chan []byte
 	refreshChan    chan struct{}
 	controlManager *controls.ControlManager
-	logRepo        *repo.Repo
+	//logRepo        *repo.Repo
 }
 
-func New(controlManager *controls.ControlManager, logRepo *repo.Repo) *Handler {
+func New(controlManager *controls.ControlManager) *Handler {
 	return &Handler{
 		upgrader:       websocket.Upgrader{CheckOrigin: func(r *http.Request) bool { return true }},
 		connectionPool: сonnectionPool{connections: make(map[*websocket.Conn]struct{})},
 		msgChan:        make(chan []byte),
 		refreshChan:    make(chan struct{}),
 		controlManager: controlManager,
-		logRepo:        logRepo,
+		//logRepo:        logRepo,
 	}
 }
 
 func (h *Handler) HomePage(ctx echo.Context) error {
-	//t, err := template.ParseFiles("/home/dme-dashboard/web/index.html")
-	t, err := template.ParseFiles("./web/index_new.html")
+	t, err := template.ParseFiles("/home/dme-dashboard/web/index.html")
+	//t, err := template.ParseFiles("./web/index_new.html")
 	if err != nil {
 		return err
 	}
@@ -49,8 +47,8 @@ func (h *Handler) HomePage(ctx echo.Context) error {
 }
 
 func (h *Handler) LogPage(ctx echo.Context) error {
-	//t, err := template.ParseFiles("/home/dme-dashboard/web/logs.html")e
-	t, err := template.ParseFiles("./web/logs.html")
+	t, err := template.ParseFiles("/home/dme-dashboard/web/logs.html")
+	//t, err := template.ParseFiles("./web/logs.html")
 	if err != nil {
 		return err
 	}
@@ -58,25 +56,25 @@ func (h *Handler) LogPage(ctx echo.Context) error {
 }
 
 func (h *Handler) Logs(ctx echo.Context) error {
-	start := ctx.Param("startDate")
-	end := ctx.Param("endDate")
-
-	startDate, err := civil.ParseDate(start)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("can't parse startDate: %v", start))
-	}
-	endDate, err := civil.ParseDate(end)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("can't parse endDate: %v", end))
-	}
-	data, err := h.logRepo.GetData(startDate, endDate)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("can't get data: %v", err))
-	}
+	//start := ctx.Param("startDate")
+	//end := ctx.Param("endDate")
+	//
+	//startDate, err := civil.ParseDate(start)
+	//if err != nil {
+	//	return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("can't parse startDate: %v", start))
+	//}
+	//endDate, err := civil.ParseDate(end)
+	//if err != nil {
+	//	return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("can't parse endDate: %v", end))
+	//}
+	//data, err := h.logRepo.GetData(startDate, endDate)
+	//if err != nil {
+	//	return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("can't get data: %v", err))
+	//}
 	body := &bytes.Buffer{}
-	for _, v := range data {
-		body.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", v.Date.Format("2006-01-02 15:04:05"), v.Msg))
-	}
+	//for _, v := range data {
+	//	body.WriteString(fmt.Sprintf("<tr><td>%s</td><td>%s</td></tr>", v.Date.Format("2006-01-02 15:04:05"), v.Msg))
+	//}
 	return ctx.JSON(http.StatusOK, body.String())
 }
 

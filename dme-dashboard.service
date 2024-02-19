@@ -1,0 +1,11 @@
+[Unit]
+Description=dme-dashboard
+
+[Service]
+User=root
+ExecStart=/home/dme-dashboard/dme_dashboard
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

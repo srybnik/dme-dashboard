@@ -7,7 +7,6 @@ import (
 	"github.com/srybnik/dme-dashboard/internal/controls"
 	"github.com/srybnik/dme-dashboard/internal/handler"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
-	"github.com/srybnik/dme-dashboard/internal/repo"
 	"time"
 )
 
@@ -16,16 +15,16 @@ type Service struct {
 	mcpManager     *mcp.McpManager
 	buzzer         *buzzer.Buzzer
 	controlManager *controls.ControlManager
-	logRepo        *repo.Repo
+	//logRepo        *repo.Repo
 }
 
-func New(controlManager *controls.ControlManager, apiHandler *handler.Handler, mcpManager *mcp.McpManager, buzzer *buzzer.Buzzer, logRepo *repo.Repo) *Service {
+func New(controlManager *controls.ControlManager, apiHandler *handler.Handler, mcpManager *mcp.McpManager, buzzer *buzzer.Buzzer) *Service {
 	return &Service{
 		apiHandler:     apiHandler,
 		mcpManager:     mcpManager,
 		buzzer:         buzzer,
 		controlManager: controlManager,
-		logRepo:        logRepo,
+		//logRepo:        logRepo,
 	}
 }
 
@@ -143,8 +142,9 @@ func (s *Service) Start() error {
 						s.controlManager.ControlsBlink = append(s.controlManager.ControlsBlink, control)
 						s.controlManager.Unlock()
 					}
-					s.logRepo.Event("%s: %t", control.GetName(), control.IsChecked)
+					//s.logRepo.Event("%s: %t", control.GetName(), control.IsChecked)
 				}
+				time.Sleep(time.Millisecond * 10)
 			}
 			time.Sleep(time.Second / 2)
 		}
