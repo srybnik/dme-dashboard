@@ -31,7 +31,7 @@ func (r *Repo) GetData(startDate civil.Date, endDate civil.Date) ([]Log, error) 
 	query := `select dt, msg
 		from events
 		where dt between $1 and $2`
-	data := []Log{}
+	var data []Log
 	err := r.db.Select(&data, query, startDate, endDate.AddDays(1))
 	return data, err
 }

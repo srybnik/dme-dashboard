@@ -166,6 +166,10 @@
                         <p>
                         <div id="Led16" class="white">Фид. 2</div>
                         <p>
+                        <div id="Led16ц" class="white">Фид. 2</div>
+                        <p>
+                        <div id="Led16у" class="white">Фид. 2</div>
+                        <p>
                     </div>
                 </td>
                 <td height="100px" width="100px" valign="top">
@@ -491,7 +495,7 @@
                 elmnt.className = obj.color
             }
             if (elmnt && obj.controlType == 2) {
-                elmnt.checked = obj.isChecked
+                    elmnt.checked = obj.isChecked
                 renderVPP();
             }
             if (elmnt && obj.controlType == 6) {
@@ -537,7 +541,7 @@
             elmnt = document.getElementById("Led" + i)
             if (elmnt) {
                 elmnt.oncontextmenu = function () {
-                    contextmenu(event, this.id);
+                    contextmenu(event, elmnt.id);
                 }
             }
         }
@@ -545,7 +549,7 @@
             elmnt = document.getElementById("label" + i)
             if (elmnt) {
                 elmnt.oncontextmenu = function () {
-                    contextmenu(event, this.childNodes[1].id)
+                    contextmenu(event, elmnt.childNodes[1].id)
                 }
             }
         }

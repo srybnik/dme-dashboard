@@ -4,86 +4,182 @@
     <title>Настройки</title>
     <meta charset="utf-8">
     <link href="config.css" rel="stylesheet" type="text/css">
+    <link href="config-grid.css" rel="stylesheet" type="text/css">
+    <link href="div.css" rel="stylesheet" type="text/css">
+    <link href="switch.css" rel="stylesheet" type="text/css">
     <script src="config.js"></script>
 </head>
 <body>
-<div class="container">
 
-    <div class="control-line">
-        <h2>Платы</h2>
+<div class="wrapper">
+    <div class="a">
+        <div class="control-line">
+            <h2>Платы</h2>
+        </div>
+        <table id="boards" class="table table-boards">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>PA0</th>
+                <th>PA1</th>
+                <th>PA2</th>
+                <th>PA3</th>
+                <th>PA4</th>
+                <th>PA5</th>
+                <th>PA6</th>
+                <th>PA7</th>
+                <th>PB0</th>
+                <th>PB1</th>
+                <th>PB2</th>
+                <th>PB3</th>
+                <th>PB4</th>
+                <th>PB5</th>
+                <th>PB6</th>
+                <th>PB7</th>
+            </tr>
+            </thead>
+            <tbody id="boards-body">
+            </tbody>
+        </table>
     </div>
-    <table id="boards" class="table table-boards">
-        <thead>
-        <tr>
-            <th>Имя</th>
-            <th>PA0</th>
-            <th>PA1</th>
-            <th>PA2</th>
-            <th>PA3</th>
-            <th>PA4</th>
-            <th>PA5</th>
-            <th>PA6</th>
-            <th>PA7</th>
-            <th>PB0</th>
-            <th>PB1</th>
-            <th>PB2</th>
-            <th>PB3</th>
-            <th>PB4</th>
-            <th>PB5</th>
-            <th>PB6</th>
-            <th>PB7</th>
-        </tr>
-        </thead>
-        <tbody id="boards-body">
-        </tbody>
-    </table>
-    <br>
-    <br>
-    <br>
+    <div class="d">
 
-    <div class="control-line">
-        <h2>Объекты</h2>
-        <button class="btn" onclick="addNewObjectRow()">Добавить</button>
-    </div>
-    <table id="objects" class="table table-objects">
-        <thead>
-        <tr>
-            <th>Имя</th>
-            <th>Панель</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody id="objects-body">
-        </tbody>
-    </table>
-    <br>
-    <br>
-    <br>
-    <div class="control-line">
-        <h2>Компоненты</h2>
-        <button class="btn" onclick="addNewComponentRow()">Добавить</button>
-    </div>
-    <table id="components" class="table table-components">
-        <thead>
-        <tr>
-            <th>Имя</th>
-            <th>Тип</th>
-            <th>Объект</th>
-            <th>Плата</th>
-            <th>Пин</th>
-            <th>INPUT/OUTPUT</th>
-            <th>Используется</th>
-            <th>Инверсия</th>
-            <th>Задержка/сек</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody id="components-body">
-        </tbody>
-    </table>
+        <div class="control-line">
+            <h2>Табло</h2>
+        </div>
+        <table id="vpp-components" class="table table-vpp-components">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Плата-Пин</th>
+                <th>Плата-Пин Используется / Не используется</th>
+                <th>Используется</th>
+                <th>Инверсия</th>
+            </tr>
+            </thead>
+            <tbody id="vpp-components-body">
+            </tbody>
+        </table>
 
+    </div>
+    <div class="b">
+        <div class="control-line">
+            <h2>Объекты</h2>
+            <button class="btn" onclick="addNewObjectRow()">Добавить ➕</button>
+        </div>
+        <table id="objects" class="table table-objects">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Панель</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="objects-body">
+            </tbody>
+        </table>
+
+    </div>
+    <div class="c">
+        <div class="control-line">
+            <h2>Типы компонентов</h2>
+        </div>
+        <div class="">
+            <div class="inline-block">
+                <h3>1 :</h3>
+            </div>
+            <div class="inline-block">
+                <div class="green">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="greenblink">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="red">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="redblink">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="grey">Фид. 1</div>
+            </div>
+        </div>
+        <p>
+        <p>
+        <div class="">
+            <div class="inline-block">
+                <h3>2 :</h3>
+            </div>
+            <div class="inline-block">
+                <div class="white" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+            <div class="inline-block">
+                <div class="red" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+            <div class="inline-block">
+                <div class="grey" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+        </div>
+        <p>
+        <p>
+        <div>
+            <div class="inline-block">
+                <h3>3 :</h3>
+            </div>
+            <div class="inline-block">
+                <div>
+                    <p>Выкл ДГ</p>
+                    <label class="switch">
+                        <input id="Checkbox10" type="checkbox" unchecked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d">
+
+        <div class="control-line">
+            <h2>Компоненты</h2>
+            <button class="btn" onclick="addNewComponentRow()">Добавить ➕</button>
+        </div>
+        <table id="components" class="table table-components">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Объект</th>
+                <th>Плата-Пин</th>
+                <th>INPUT/OUTPUT</th>
+                <th>Используется</th>
+                <th>Инверсия</th>
+                <th>Задержка</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="components-body">
+            </tbody>
+        </table>
+        <p>
+        <p>
+        <p>
+        <div class="footer">
+            <button class="btn" onclick="addNewComponentRow()">Сохранить 💾</button>
+        </div>
+    </div>
 
 </div>
+
+
 <script>
 
 </script>

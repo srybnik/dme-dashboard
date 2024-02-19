@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/srybnik/dme-dashboard/internal/buzzer"
 	"github.com/srybnik/dme-dashboard/internal/controls"
 	"github.com/srybnik/dme-dashboard/internal/handler"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
@@ -14,16 +13,15 @@ import (
 type Service struct {
 	apiHandler     *handler.Handler
 	mcpManager     *mcp.McpManager
-	buzzer         *buzzer.Buzzer
 	controlManager *controls.ControlManager
 	logRepo        *repo.Repo
 }
 
-func New(controlManager *controls.ControlManager, apiHandler *handler.Handler, mcpManager *mcp.McpManager, buzzer *buzzer.Buzzer, logRepo *repo.Repo) *Service {
+func New(controlManager *controls.ControlManager, apiHandler *handler.Handler, mcpManager *mcp.McpManager, logRepo *repo.Repo) *Service {
 	return &Service{
-		apiHandler:     apiHandler,
-		mcpManager:     mcpManager,
-		buzzer:         buzzer,
+		apiHandler: apiHandler,
+		mcpManager: mcpManager,
+
 		controlManager: controlManager,
 		logRepo:        logRepo,
 	}
@@ -77,12 +75,16 @@ func (s *Service) Start() error {
 		//получение значений при старте, не мигаем
 		for _, control := range s.controlManager.Controls {
 			if control.Type == controls.ControlTypeButton {
-				if err := s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, control.IsChecked); err != nil {
-					chanError <- err
-					return
-				}
+				//if err := s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, control.IsChecked); err != nil {
+				//	chanError <- err
+				//	return
+				//}
 			}
-			currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
+			//currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
+			var (
+				currentValue bool
+				err          error
+			)
 			if err != nil {
 				chanError <- err
 				return
@@ -109,7 +111,11 @@ func (s *Service) Start() error {
 				if control.IsDisable {
 					continue
 				}
-				currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
+				//currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
+				var (
+					currentValue bool
+					err          error
+				)
 				if err != nil {
 					chanError <- err
 					return
@@ -172,10 +178,10 @@ func (s *Service) Start() error {
 				return
 			}
 
-			err = s.buzzer.Tone(2000, 0.800)
-			if err != nil {
-				time.Sleep(time.Second)
-			}
+			//err = s.buzzer.Tone(2000, 0.800)
+			//if err != nil {
+			//	time.Sleep(time.Second)
+			//}
 
 			s.controlManager.Lock()
 			for _, control := range s.controlManager.ControlsBlink {
@@ -244,11 +250,11 @@ func (s *Service) ServeMsg(msg []byte) {
 			fmt.Println(err)
 			return
 		}
-		err = s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, m.IsChecked)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		//err = s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, m.IsChecked)
+		//if err != nil {
+		//	fmt.Println(err)
+		//	return
+		//}
 		control.IsChecked = m.IsChecked
 		err = s.controlManager.SaveControlProperties(control)
 		if err != nil {

@@ -1,58 +1,42 @@
 package handler
 
 import (
-	"context"
-	"encoding/base32"
 	"fmt"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/rs/zerolog"
-	"hash/fnv"
 	"time"
+
+	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 )
 
-func requestID(t time.Time) string {
-	tb, _ := t.MarshalBinary()
-	h := fnv.New64()
-	_, _ = h.Write(tb)
-	bin := h.Sum(nil)
-	return base32.StdEncoding.EncodeToString(bin[:5])
-}
-
-func LogMiddleware(loger zerolog.Logger, skipper middleware.Skipper) echo.MiddlewareFunc {
+func LogMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(ctx echo.Context) error {
 			t := time.Now()
-			l := loger.With().Str("request_id", requestID(t)).Logger()
-			c.Set("logger", l)
-			err := next(c)
-			if skipper != nil && skipper(c) {
-				return err
-			}
-			status := c.Response().Status
+			err := next(ctx)
+
+			status := ctx.Response().Status
 			var msg string
 			if err != nil {
-				httpError, ok := err.(*echo.HTTPError)
-				if ok {
-					status = httpError.Code
-					msg = fmt.Sprintf("%v", httpError.Message)
+				if httpErr, ok := err.(*echo.HTTPError); ok {
+					status = httpErr.Code
+					msg = fmt.Sprintf("%v", httpErr.Message)
 				} else {
 					msg = err.Error()
 					status = 0
 				}
 			}
-			r := c.Request()
-			var level *zerolog.Event
+
+			evt := log.Info()
 			if err != nil || status > 399 {
-				level = l.Error()
-			} else {
-				level = l.Info()
+				evt = log.Error()
 			}
+
+			r := ctx.Request()
 			url := r.RequestURI
-			if len(url) > 80 {
-				url = url[:79] + "...truncated..."
+			if len(url) > 100 {
+				url = url[:99] + "...truncated..."
 			}
-			level.
+			evt.
 				Str("host", r.Host).
 				Str("url", url).
 				Int("status", status).
@@ -60,18 +44,6 @@ func LogMiddleware(loger zerolog.Logger, skipper middleware.Skipper) echo.Middle
 				Str("source", r.RemoteAddr).
 				Str("method", r.Method).
 				Msg(msg)
-			return err
-		}
-	}
-}
-
-func TimeoutMiddleware(timeout time.Duration) echo.MiddlewareFunc {
-	return func(handlerFunc echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			ctx, cancel := context.WithTimeout(c.Request().Context(), timeout)
-			defer cancel()
-			c.SetRequest(c.Request().WithContext(ctx))
-			err := handlerFunc(c)
 			return err
 		}
 	}

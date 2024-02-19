@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/srybnik/dme-dashboard/internal/config"
+	"github.com/srybnik/dme-dashboard/internal/mcp"
 	"sync"
 )
 
@@ -26,19 +27,19 @@ const (
 	ControlTypeLuk    = 7
 )
 
-type McpParam struct {
-	DeviceID int64
-	PinID    int64
-	Value    bool
-}
+//type McpParam struct {
+//	DeviceID int64
+//	PinID    int64
+//	Value    bool
+//}
 
 type Control struct {
-	McpParam  McpParam
-	ElementID string
-	IsDisable bool
-	IsChecked bool
-	Type      int64
-	Value     string
+	McpPinValue mcp.PinValue
+	ElementID   string
+	IsDisable   bool
+	IsChecked   bool
+	Type        int64
+	Value       string
 }
 
 type ControlManager struct {
