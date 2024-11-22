@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Настройки</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" type="image/x-icon" href="static/settings.png">
+    <link href="static/config.css" rel="stylesheet" type="text/css">
+    <link href="static/config-grid.css" rel="stylesheet" type="text/css">
+    <link href="static/div.css" rel="stylesheet" type="text/css">
+    <link href="static/switch.css" rel="stylesheet" type="text/css">
+    <script src="static/config.js"></script>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="a">
+        <div class="control-line">
+            <h2>Платы</h2>
+        </div>
+        <table id="boards" class="table table-boards">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>PA0</th>
+                <th>PA1</th>
+                <th>PA2</th>
+                <th>PA3</th>
+                <th>PA4</th>
+                <th>PA5</th>
+                <th>PA6</th>
+                <th>PA7</th>
+                <th>PB0</th>
+                <th>PB1</th>
+                <th>PB2</th>
+                <th>PB3</th>
+                <th>PB4</th>
+                <th>PB5</th>
+                <th>PB6</th>
+                <th>PB7</th>
+            </tr>
+            </thead>
+            <tbody id="boards-body">
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="e">
+
+        <div class="control-line">
+            <h2>Заметки</h2>
+        </div>
+
+        <textarea id="comment" rows="50" cols="50">Какойто текст...</textarea>
+
+
+        <div class="footer">
+            <button class="btn btncfg" onclick="">Загрузить из файла 📁</button>
+            <button class="btn btncfg" onclick="">Сохранить в файл 💾</button>
+            <button class="btn btncfg" onclick="updateConfig()">Применить ✅</button>
+        </div>
+    </div>
+
+    <div class="d">
+
+        <div class="control-line">
+            <h2>Табло</h2>
+        </div>
+        <table id="tablo-items" class="table table-tablo-items">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Пин</th>
+                <th>Управляющий Пин</th>
+                <th>Используется</th>
+                <th>Инверсия</th>
+            </tr>
+            </thead>
+            <tbody id="tablo-items-body">
+            </tbody>
+        </table>
+
+    </div>
+    <div class="b">
+        <div class="control-line">
+            <h2>Объекты</h2>
+            <button class="btn" onclick="addNewObjectRow()">Добавить ➕</button>
+        </div>
+        <table id="objects" class="table table-objects">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Панель</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="objects-body">
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div class="c">
+        <div class="control-line">
+            <h2>Типы элементов</h2>
+        </div>
+        <div class="">
+            <div class="inline-block">
+                <h3>1 :</h3>
+            </div>
+            <div class="inline-block">
+                <div class="green">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="greenblink">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="red">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="redblink">Фид. 1</div>
+            </div>
+            <div class="inline-block">
+                <div class="grey">Фид. 1</div>
+            </div>
+        </div>
+        <p>
+        <p>
+        <div class="">
+            <div class="inline-block">
+                <h3>2 :</h3>
+            </div>
+            <div class="inline-block">
+                <div class="white" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+            <div class="inline-block">
+                <div class="red" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+            <div class="inline-block">
+                <div class="grey" style="border-radius: 15px">
+                    УВД <br>
+                    >30°
+                </div>
+            </div>
+        </div>
+        <p>
+        <p>
+        <div>
+            <div class="inline-block">
+                <h3>3 :</h3>
+            </div>
+            <div class="inline-block">
+                <div>
+                    <p>Выкл ДГ</p>
+                    <label class="switch">
+                        <input id="Checkbox10" type="checkbox" unchecked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="d">
+
+        <div class="control-line">
+            <h2>Элементы</h2>
+            <button class="btn" onclick="addNewItemRow()">Добавить ➕</button>
+        </div>
+        <table id="items" class="table table-items">
+            <thead>
+            <tr>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Объект</th>
+                <th>Пин</th>
+                <th>INPUT/OUTPUT</th>
+                <th>Используется</th>
+                <th>Инверсия</th>
+                <th>Задержка</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="items-body">
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<dialog id="dialogWindow">
+    <h2 id="dialogtext"></h2>
+
+    <button class="btn" onclick="window.dialogWindow.close()">
+        Окей 👌
+    </button>
+</dialog>
+
+<script>
+
+</script>
+</body>
+</html>

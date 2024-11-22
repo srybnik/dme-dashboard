@@ -34,6 +34,7 @@ func (s *Server) Stream(stream StreamService_StreamServer) error {
 				Pin:    int(resp.Pin),
 				Value:  mcp.PinLevel(resp.Value),
 				HasErr: resp.HasErr,
+				Mode:   mcp.PinMode(resp.Mode),
 			}
 		}
 	})
@@ -45,6 +46,7 @@ func (s *Server) Stream(stream StreamService_StreamServer) error {
 				Pin:    int32(v.Pin),
 				Value:  bool(v.Value),
 				HasErr: v.HasErr,
+				Mode:   int32(v.Mode),
 			}
 			if err := stream.Send(&data); err != nil {
 				return err

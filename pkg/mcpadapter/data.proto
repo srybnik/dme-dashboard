@@ -13,4 +13,5 @@ message Data {
   int32 pin = 2;
   bool value = 3;
   bool hasErr = 4;
-}
+  int32 mode = 5;
+ }

@@ -1,16 +1,7 @@
 .wrapper {
     display: grid;
-    /*grid-template-columns: repeat(3, 1fr);*/
-    /*grid-auto-rows: 100%;*/
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 100px;
+    margin: 15px;
     grid-template-areas: ". d e .";
-}
-
-.box {
-    /*border-radius: 5px;*/
-    /*position: relative;*/
-    border: 2px solid #ffd991;
 }
 
 .a {
@@ -25,13 +16,5 @@
     grid-column: 1 / 3 ;
     grid-row: 2 ;
 }
-
-
-/*.d {*/
-/*    grid-area: d;*/
-/*}*/
-/*.e {*/
-/*    grid-area: e;*/
-/*}*/
 
 

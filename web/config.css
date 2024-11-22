@@ -1,0 +1,207 @@
+
+.table-boards {
+    empty-cells: show;
+    border-spacing: 0;
+    width: 1000px;
+    /*border-radius: 6px;*/
+    border: 1px solid rgb(159, 159, 159);
+    line-height: 20px;
+}
+
+.table-objects {
+    empty-cells: show;
+    border-spacing: 0;
+    width: 500px;
+    /*border-radius: 6px;*/
+    border: 1px solid rgb(159, 159, 159);
+}
+
+.table-items {
+    empty-cells: show;
+    border-spacing: 0;
+    width: 1500px;
+    /*border-radius: 6px;*/
+    border: 1px solid rgb(159, 159, 159);
+
+}
+.table-tablo-items {
+    empty-cells: show;
+    border-spacing: 0;
+    width: 900px;
+    /*border-radius: 6px;*/
+    border: 1px solid rgb(159, 159, 159);
+}
+
+.table thead {
+    background-color: #f1f1f1;
+    position: relative;
+    display: block;
+    width: 100%;
+    /*border-radius: 6px;*/
+
+}
+
+.table tbody {
+    display: block;
+    position: relative;
+    width: 100%;
+    /*border-radius: 6px;*/
+}
+
+.table tr {
+    /*width: 100%;*/
+    display: flex;
+}
+
+.table th {
+    flex-basis: 100%;
+    flex-grow: 2;
+    /*display: block;*/
+    padding: 0.2rem;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.td-center {
+    flex-basis: 100%;
+    flex-grow: 2;
+    /*display: block;*/
+    padding: 0.2rem;
+    /*height: 25px;*/
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.td-right {
+    flex-basis: 100%;
+    flex-grow: 2;
+    padding: 0.2rem;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    width: 40px;
+}
+
+.control-line {
+    display: flex
+}
+
+.footer {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+.btn {
+    /*padding: 1px;*/
+    margin: 20px;
+    border: 1px solid #9f9f9f;
+    border-radius: 6px;
+    /*color: #000000;*/
+    font-size: 16px;
+    background-color: #efefef;
+    cursor: pointer;
+    outline: none;
+    /*height: 25px*/
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn:active {
+    opacity: 0.6;
+}
+
+.btncfg {
+    /*padding: 1px;*/
+    margin: 5px;
+    border: 1px solid #9f9f9f;
+    border-radius: 6px;
+    /*color: #000000;*/
+    font-size: 16px;
+    background-color: #efefef;
+    cursor: pointer;
+    outline: none;
+    /*height: 25px*/
+}
+
+
+.btnrow {
+    /*padding: 10px;*/
+    /*margin: 10px;*/
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    /*color: #000000;*/
+    font-size: 15px;
+    background-color: #efefef;
+    cursor: pointer;
+    outline: none;
+    /*height: 25px*/
+}
+
+.btnrow:hover {
+    opacity: 0.8;
+}
+
+.btnrow:active {
+    opacity: 0.6;
+}
+
+
+.active-board {
+    background-color: rgba(58, 245, 39, 0.24);
+}
+
+.not-active-board {
+    background-color: rgba(245, 39, 39, 0.44);
+}
+
+.table-row-distinct {
+    background-color: rgba(240, 248, 253, 0.93);
+}
+
+.inline-block {
+    display: inline-block; /*Задаем блочно-строчное отображение*/
+}
+
+input, select{
+    margin:0;
+    padding:0;
+    /*height:100%;*/
+    width:100%;
+    background: transparent;
+    border: none;
+    text-align: center;
+    text-align-last: center;
+    font-size: 16px;
+}
+
+option{
+    margin:10px;
+    /*padding:0;*/
+    /*!*height:100%;*!*/
+    /*width:100%;*/
+    /*background: transparent;*/
+    /*border: none;*/
+    text-align: center;
+    text-align-last: center;
+    /*font-size: 16px;*/
+}
+
+
+textarea {
+    background: rgba(240, 248, 253, 0.49); /* Цвет фона */
+    border: 1px solid #c4c4c4;
+    padding: 10px; /* Поля */
+    /*width: 100%; !* Ширина *!*/
+    /*height: 200px; !* Высота *!*/
+    box-sizing: border-box; /* Алгоритм расчёта ширины */
+    font-size: 16px; /* Размер шрифта */
+}
+
+dialog {
+    background: rgba(255, 255, 255);
+    width: 400px;
+    border-radius: 5px;
+    text-align: center;
+}

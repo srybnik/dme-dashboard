@@ -1,275 +1,341 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/srybnik/dme-dashboard/internal/controls"
-	"github.com/srybnik/dme-dashboard/internal/handler"
+	"github.com/gorilla/websocket"
+	"github.com/rs/zerolog/log"
+	"github.com/srybnik/dme-dashboard/internal/config"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
-	"github.com/srybnik/dme-dashboard/internal/repo"
+	"github.com/srybnik/dme-dashboard/internal/models"
+	"sync"
 	"time"
 )
 
+const (
+	ItemTypeLed = iota + 1
+	ItemTypePanel
+	ItemTypeSlider
+	ItemTypeSignal
+	ItemTypeTablo
+	ItemTypeTimer
+	ItemTypeErr
+)
+
 type Service struct {
-	apiHandler     *handler.Handler
-	mcpManager     *mcp.McpManager
-	controlManager *controls.ControlManager
-	logRepo        *repo.Repo
+	cfg *config.Config
+	mcp *mcp.McpManager
+
+	conns map[*websocket.Conn]struct{}
+	mu    sync.RWMutex
+
+	itemKeys map[ItemMcpKey]*Item
+	itemIDs  map[int]*Item
+
+	tabloItemKeys map[ItemMcpKey]*TabloItem
+	tabloItemIDs  map[int]*TabloItem
+
+	wg           sync.WaitGroup
+	msgCh        chan models.Msg
+	signalCh     chan struct{}
+	stopSignalCh chan struct{}
+	refreshCh    chan struct{}
+
+	ctx        context.Context
+	cancelFunc context.CancelFunc
+
+	mcpErr [mcp.Devs]bool
 }
 
-func New(controlManager *controls.ControlManager, apiHandler *handler.Handler, mcpManager *mcp.McpManager, logRepo *repo.Repo) *Service {
+func New(cfg *config.Config, m *mcp.McpManager) *Service {
 	return &Service{
-		apiHandler: apiHandler,
-		mcpManager: mcpManager,
+		cfg:   cfg,
+		mcp:   m,
+		conns: make(map[*websocket.Conn]struct{}),
 
-		controlManager: controlManager,
-		logRepo:        logRepo,
+		msgCh:        make(chan models.Msg, 50),
+		signalCh:     make(chan struct{}),
+		stopSignalCh: make(chan struct{}),
+		refreshCh:    make(chan struct{}),
 	}
 }
 
-func (s *Service) Start() error {
-	chanError := make(chan error)
+func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
+	s.ctx = ctx
+	s.cancelFunc = cancelFunc
 
-	//обработка обновлений
+	s.itemKeys = make(map[ItemMcpKey]*Item)
+	s.itemIDs = make(map[int]*Item)
+	s.tabloItemKeys = make(map[ItemMcpKey]*TabloItem)
+	s.tabloItemIDs = make(map[int]*TabloItem)
+
+	mcpInputCh, mcpOutputCh := s.mcp.Run(ctx)
+
+	for _, v := range s.cfg.Items {
+		if v.IsActive {
+			item := NewItem(v.ID, v.TypeID, v.BoardID, v.PinID, v.Duration, v.IsInverse, v.IsInput, s.msgCh, s.signalCh, mcpOutputCh)
+			s.itemKeys[ItemMcpKey{v.BoardID, v.PinID}] = item
+			s.itemIDs[v.ID] = item
+
+			item.SetToMcpValue(ctx, false) // TODO: заполнить значение из бд
+		}
+	}
+
+	for _, v := range s.cfg.TabloItems {
+		item := NewTabloItem(v.ID, v.BoardID, v.PinID, v.ManageBoardID, v.ManagePinID, v.IsInverse, s.msgCh, mcpOutputCh)
+		s.tabloItemKeys[ItemMcpKey{v.BoardID, v.PinID}] = item
+		s.tabloItemIDs[v.ID] = item
+
+		item.SetToMcpValue(ctx, false) // TODO: заполнить значение из бд
+	}
+
+	// Чтение изменений из mcp
+	s.wg.Add(1)
 	go func() {
-		for range s.apiHandler.RefreshNotify() {
-			err := s.RefreshAll()
-			if err != nil {
-				chanError <- err
-				return
-			}
-		}
-	}()
-
-	//обработка сокет сообщений
-	go func() {
-		for msg := range s.apiHandler.ReadWebsocketMessage() {
-			s.ServeMsg(msg)
-		}
-	}()
-
-	//отображение текущего времени
-	go func() {
-		location, _ := time.LoadLocation("Europe/Moscow")
-		timer := time.Tick(1 * time.Second)
-		for t := range timer {
-			if err := s.SetElementProperties("timer", controls.ControlTypeTimer, "", false, t.In(location).Format("15:04:05")); err != nil {
-				chanError <- err
-				return
-			}
-		}
-	}()
-
-	//обход пинов платы
-	go func() {
-		type key struct {
-			DeviceID int64
-			PinID    int64
-		}
-		type val struct {
-			Value   bool
-			Expired time.Time
-		}
-		cache := make(map[key]val)
-
-		//получение значений при старте, не мигаем
-		for _, control := range s.controlManager.Controls {
-			if control.Type == controls.ControlTypeButton {
-				//if err := s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, control.IsChecked); err != nil {
-				//	chanError <- err
-				//	return
-				//}
-			}
-			//currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
-			var (
-				currentValue bool
-				err          error
-			)
-			if err != nil {
-				chanError <- err
-				return
-			}
-			//if control.Type == controls.ControlTypeButton {
-			//	currentValue = !currentValue
-			//}
-			if control.Type == controls.ControlTypePanel && control.ElementID != "Led19" {
-				currentValue = !currentValue
-			}
-			k := key{
-				DeviceID: control.McpParam.DeviceID,
-				PinID:    control.McpParam.PinID,
-			}
-			cache[k] = val{
-				Value:   currentValue,
-				Expired: time.Now().Add(2 * time.Second),
-			}
-			control.McpParam.Value = currentValue
-		}
-
+		defer s.wg.Done()
 		for {
-			for _, control := range s.controlManager.Controls {
-				if control.IsDisable {
+			select {
+			case <-ctx.Done():
+				return
+			case msg := <-mcpInputCh:
+				if item, ok := s.itemKeys[ItemMcpKey{msg.Device, msg.Pin}]; ok {
+					item.SetFromMcpValue(ctx, bool(msg.Value), msg.HasErr)
+				}
+
+				if item, ok := s.tabloItemKeys[ItemMcpKey{msg.Device, msg.Pin}]; ok {
+					item.SetFromMcpValue(ctx, bool(msg.Value), msg.HasErr)
+				}
+
+				s.mcpErr[msg.Device] = msg.HasErr
+			}
+		}
+	}()
+
+	// Обновление текущих данных
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+
+		ticker := time.NewTicker(3 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-s.refreshCh:
+			case <-ticker.C:
+			}
+			for _, item := range s.itemIDs {
+				item.SendMsgCurrentValue()
+			}
+			for _, item := range s.tabloItemIDs {
+				item.SendMsgCurrentValue()
+			}
+		}
+	}()
+
+	// Обработка сигнла сирены
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-s.signalCh:
+				s.StartSignal(ctx)
+			}
+		}
+	}()
+
+	// отправка в сокеты
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case msg := <-s.msgCh:
+				msgBody, err := json.Marshal(msg)
+				if err != nil {
+					log.Error().Msgf("can not marshal msg: %v", err)
 					continue
 				}
-				//currentValue, err := s.mcpManager.ReadPin(control.McpParam.DeviceID, control.McpParam.PinID)
-				var (
-					currentValue bool
-					err          error
-				)
-				if err != nil {
-					chanError <- err
-					return
+				s.mu.RLock()
+				for conn := range s.conns {
+					conn.WriteMessage(1, msgBody)
 				}
-				//if control.Type == controls.ControlTypeButton {
-				//	currentValue = !currentValue
-				//}
-				if control.Type == controls.ControlTypePanel && control.ElementID != "Led19" {
-					currentValue = !currentValue
-				}
-				k := key{
-					DeviceID: control.McpParam.DeviceID,
-					PinID:    control.McpParam.PinID,
-				}
-				v := cache[k]
-				if v.Value != currentValue {
-					v.Value = currentValue
-					v.Expired = time.Now().Add(2 * time.Second)
-					cache[k] = v
-				}
-
-				if control.McpParam.Value != currentValue && time.Now().After(v.Expired) {
-					control.McpParam.Value = currentValue
-					err = s.RefreshAll()
-					if err != nil {
-						chanError <- err
-						return
-					}
-					if control.Type == controls.ControlTypeLed || control.Type == controls.ControlTypePanel {
-						s.controlManager.Lock()
-						s.controlManager.ControlsBlink = append(s.controlManager.ControlsBlink, control)
-						s.controlManager.Unlock()
-					}
-					s.logRepo.Event("%s: %t", control.GetName(), control.IsChecked)
-				}
+				s.mu.RUnlock()
 			}
-			time.Sleep(time.Second / 2)
 		}
 	}()
 
-	//мигание и бузер
+	// Таймер
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+		ticker := time.NewTicker(1 * time.Second)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case t := <-ticker.C:
+				s.msgCh <- models.Msg{
+					ID:     2,
+					TypeID: ItemTypeTimer,
+					Value:  t.Format("15:04:05"),
+				}
+			}
+		}
+	}()
+
+	// Чек отвалившихся плат
+	s.wg.Add(1)
+	go func() {
+		defer s.wg.Done()
+		ticker := time.NewTicker(3 * time.Second)
+		defer ticker.Stop()
+
+		var preErr bool
+
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				var hasErr bool
+				for _, item := range s.itemIDs {
+					if item.HasErr {
+						hasErr = true
+					}
+				}
+				for _, item := range s.tabloItemIDs {
+					if item.HasErr && item.IsActive {
+						hasErr = true
+					}
+				}
+
+				if !hasErr {
+					preErr = false
+					s.msgCh <- models.Msg{
+						ID:     2,
+						TypeID: ItemTypeErr,
+						Value:  "timer",
+					}
+					continue
+				}
+
+				if hasErr && !preErr {
+					preErr = true
+					s.msgCh <- models.Msg{
+						ID:     2,
+						TypeID: ItemTypeErr,
+						Value:  "redtimer",
+					}
+					select {
+					case s.signalCh <- struct{}{}:
+					default:
+					}
+				}
+			}
+		}
+	}()
+
+	go func() {
+		for range 20 {
+			s.StopSignal()
+			time.Sleep(500 * time.Millisecond)
+		}
+	}()
+}
+
+func (s *Service) Wait() {
+	s.mcp.Wait()
+	s.wg.Wait()
+}
+
+func (s *Service) Close() {
+	if s.cancelFunc != nil {
+		s.cancelFunc()
+	}
+}
+
+func (s *Service) Websocket(ctx context.Context, conn *websocket.Conn) error {
+	s.mu.Lock()
+	s.conns[conn] = struct{}{}
+	s.mu.Unlock()
+
+	defer func() {
+		s.mu.Lock()
+		delete(s.conns, conn)
+		s.mu.Unlock()
+	}()
+
+	s.refreshCh <- struct{}{}
+
+	msgCh := make(chan models.Msg)
+	errCh := make(chan error)
 	go func() {
 		for {
-			if len(s.controlManager.ControlsBlink) == 0 {
-				continue
-			}
-			s.controlManager.Lock()
-			for _, control := range s.controlManager.ControlsBlink {
-				err := s.SetElementProperties(control.ElementID, control.Type, control.GetColor(), control.IsChecked, "")
-				if err != nil {
-					chanError <- err
-					return
-				}
-			}
-			s.controlManager.Unlock()
-
-			err := s.SetElementProperties("buzzer", controls.ControlTypeBuzzer, controls.BuzzerColorBlink, false, "")
+			_, body, err := conn.ReadMessage()
 			if err != nil {
-				chanError <- err
+				errCh <- err
 				return
 			}
 
-			//err = s.buzzer.Tone(2000, 0.800)
-			//if err != nil {
-			//	time.Sleep(time.Second)
-			//}
-
-			s.controlManager.Lock()
-			for _, control := range s.controlManager.ControlsBlink {
-				err := s.SetElementProperties(control.ElementID, control.Type, control.GetColorBlink(), control.IsChecked, "")
-				if err != nil {
-					chanError <- err
-					return
-				}
-			}
-			s.controlManager.Unlock()
-
-			err = s.SetElementProperties("buzzer", controls.ControlTypeBuzzer, controls.BuzzerColor, false, "")
-			if err != nil {
-				chanError <- err
+			var msg models.Msg
+			if err = json.Unmarshal(body, &msg); err != nil {
+				errCh <- err
 				return
 			}
-
-			time.Sleep(time.Second / 3)
+			msgCh <- msg
 		}
 	}()
 
-	return <-chanError
-}
-
-func (s *Service) SetElementProperties(elementID string, controlType int64, color string, isChecked bool, value string) error {
-	msg := struct {
-		ElementID   string `json:"elementID"`
-		ControlType int64  `json:"controlType"`
-		Color       string `json:"color"`
-		IsChecked   bool   `json:"isChecked"`
-		Value       string `json:"value"`
-		//Label       string `json:"label"`
-	}{
-		ElementID:   elementID,
-		ControlType: controlType,
-		Color:       color,
-		IsChecked:   isChecked,
-		Value:       value,
-		//Label:       label,
-	}
-	body, err := json.Marshal(msg)
-	if err != nil {
-		return err
-	}
-	return s.apiHandler.WriteWebsocketMessage(body)
-}
-
-func (s *Service) ServeMsg(msg []byte) {
-	m := struct {
-		ElementID   string `json:"elementID"`
-		ControlType int64  `json:"controlType"`
-		IsChecked   bool   `json:"isChecked"`
-	}{}
-	err := json.Unmarshal(msg, &m)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if m.ControlType == controls.ControlTypeBuzzer {
-		s.controlManager.ControlsBlink = []*controls.Control{}
-	}
-	if m.ControlType == controls.ControlTypeButton {
-		control, err := s.controlManager.GetByElementID(m.ElementID)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		//err = s.mcpManager.WritePin(control.McpParam.DeviceID, control.McpParam.PinID, m.IsChecked)
-		//if err != nil {
-		//	fmt.Println(err)
-		//	return
-		//}
-		control.IsChecked = m.IsChecked
-		err = s.controlManager.SaveControlProperties(control)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-	s.RefreshAll()
-}
-
-func (s *Service) RefreshAll() error {
-	for _, control := range s.controlManager.Controls {
-		err := s.SetElementProperties(control.ElementID, control.Type, control.GetColor(), control.IsChecked, "")
-		if err != nil {
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-s.ctx.Done():
+			return fmt.Errorf("service closed")
+		case err := <-errCh:
 			return err
+		case msg := <-msgCh:
+
+			switch msg.TypeID {
+			case ItemTypeSlider:
+				if item, ok := s.itemIDs[msg.ID]; ok {
+					item.SetToMcpValue(ctx, strToBool(msg.Value))
+				}
+			case ItemTypeTablo:
+				if item, ok := s.tabloItemIDs[msg.ID]; ok {
+					item.SetToMcpValue(ctx, strToBool(msg.Value))
+				}
+			case ItemTypeSignal:
+				s.StopSignal()
+			default:
+				return fmt.Errorf("unsupported message type: %v", msg.TypeID)
+			}
 		}
 	}
-	return s.SetElementProperties("buzzer", controls.ControlTypeBuzzer, controls.BuzzerColor, false, "")
+}
+
+func strToBool(s string) bool {
+	if s == "true" {
+		return true
+	}
+	return false
+}
+
+func (s *Service) GetActiveBoards() []int {
+	var res []int
+	for i, hasErr := range s.mcpErr {
+		if !hasErr {
+			res = append(res, i)
+		}
+	}
+	return res
 }

@@ -1,8 +1,7 @@
 package models
 
-type PinValue struct {
-	Device int64 `json:"device"`
-	Pin    int64 `json:"pin"`
-	Value  bool  `json:"value"`
-	HasErr bool  `json:"err"`
+type Msg struct {
+	ID     int    `json:"id,string"`
+	TypeID int    `json:"typeID"`
+	Value  string `json:"value"`
 }

@@ -1,12 +1,11 @@
 module github.com/srybnik/dme-dashboard
 
-go 1.20
+go 1.23
 
 require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/labstack/echo/v4 v4.3.0
-	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/openlyinc/civil v1.0.2
 	github.com/racerxdl/go-mcp23017 v0.0.0-20200119181255-c8f9b9777b0e
 	github.com/rs/zerolog v1.22.0
@@ -23,6 +22,7 @@ require (
 	github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
+	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/quan-to/slog v0.0.0-20190414172229-8bce0937f2c1 // indirect
 	github.com/stretchr/testify v1.6.1 // indirect

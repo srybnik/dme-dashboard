@@ -11,19 +11,14 @@ import (
 	"github.com/srybnik/dme-dashboard/pkg/mcpadapter"
 )
 
+const host = ":50005"
+
 func main() {
-
-	host := ":50005"
-
-	var cfg mcp.Config
-	for i := range cfg.PinModes[0] {
-		cfg.PinModes[0][i] = mcp.OUTPUT
-	}
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	input, output := mcp.New(&cfg).Run(ctx)
+	input, output := mcp.New(mcp.NewMcpAdapter(false)).Run(ctx)
 
 	srv := mcpadapter.NewServer(input, output)
 
@@ -35,4 +30,6 @@ func main() {
 
 	fmt.Println("Start...")
 	<-ctx.Done()
+
+	fmt.Println("Shutdown.")
 }

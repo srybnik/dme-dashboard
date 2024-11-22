@@ -17,7 +17,7 @@ type Client struct {
 	inputChan  chan mcp.PinValue
 }
 
-func New(host string) *Client {
+func NewClient(host string) *Client {
 	return &Client{
 		host:       host,
 		outputChan: make(chan mcp.PinValue, 128),
@@ -36,7 +36,7 @@ func (c *Client) Run(ctx context.Context) (chan mcp.PinValue, chan mcp.PinValue)
 			conn, err := grpc.Dial(c.host, grpc.WithTransportCredentials(insecure.NewCredentials()))
 			if err != nil {
 				log.Error().Msgf("can not connect with server %v", err)
-				time.Sleep(time.Second) //TODO:пофиксить
+				time.Sleep(time.Second)
 				continue
 			}
 
@@ -66,6 +66,7 @@ func (c *Client) Run(ctx context.Context) (chan mcp.PinValue, chan mcp.PinValue)
 						Pin:    int(resp.Pin),
 						Value:  mcp.PinLevel(resp.Value),
 						HasErr: resp.HasErr,
+						Mode:   mcp.PinMode(resp.Mode),
 					}
 				}
 			})
@@ -77,6 +78,7 @@ func (c *Client) Run(ctx context.Context) (chan mcp.PinValue, chan mcp.PinValue)
 						Pin:    int32(v.Pin),
 						Value:  bool(v.Value),
 						HasErr: v.HasErr,
+						Mode:   int32(v.Mode),
 					}
 					if err := stream.Send(&data); err != nil {
 						return err

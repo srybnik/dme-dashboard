@@ -21,3 +21,44 @@
 .imgred:hover {
     background-color: #c40000
 }
+
+
+
+.config {
+    border-radius: 50%;
+    background: #e5e9e5;
+    margin-top: 25px;
+    margin-right: 80px;
+
+    position: absolute;
+    /*bottom: 0px;*/
+    right: 0px;
+}
+
+.config:hover {
+    background-color: #cdcccc
+}
+
+.config:active {
+    transform: translateY(1px);
+}
+
+
+
+.log {
+    /*border-radius: 50%;*/
+    background: #e5e9e5;
+    margin-top: 25px;
+    margin-right: 30px;
+
+    position: absolute;
+    right: 0px;
+}
+
+.log:hover {
+    background-color: #cdcccc
+}
+
+.log:active {
+    transform: translateY(1px);
+}

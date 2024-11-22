@@ -96,8 +96,26 @@
     background-image: -webkit-linear-gradient(top, #fccba1 0%, #f8af7e 60%, #ff5900 100%);
 }
 
+.err {
+    padding: 4px;
+    text-align: center;
+    display: inline-block;
+    position: relative;
+    /*height: 20px;*/
+    width: 80px;
+    border: 2px solid #2d2d2d;
+    /*border-radius: 7px;*/
+    border-radius: 34px;
+    font-size: 15px;
+    background-image: -webkit-linear-gradient(top, #c5c5c5 0%, #7c7c7c 60%, #000000 100%);
+}
+
+
 .mydiv {
-    position: absolute;
+    /*position: absolute;*/
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 20px;
     background-color: #fcfcfc;
     text-align: center;
     border: 2px solid #bcbcbc;
@@ -122,10 +140,11 @@
 
 .panel-header {
     padding: 12px;
-    cursor: move;
+    /*cursor: move;*/
     background-color: #dbdbdb;
     color: #000000;
     border-radius: 5px;
+    border: 2px solid #bcbcbc;
     font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
     font-size: xx-large;
     line-height: 1;
@@ -133,53 +152,28 @@
 
 .mydivheader {
     padding: 12px;
-    cursor: move;
+    /*cursor: move;*/
     background-color: #dbdbdb;
     color: #000000;
     border-radius: 5px;
+    border: 2px solid #bcbcbc;
     font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
     font-size: xx-large;
     line-height: 1;
-    height: 100px;
+    /*height: 80px;*/
 }
 .mydivheader2 {
     padding-top: 13px;
     padding-right: 12px;
     padding-left: 12px;
-    cursor: move;
+    /*cursor: move;*/
     background-color: #dbdbdb;
     color: #000000;
     border-radius: 5px;
+    border: 2px solid #bcbcbc;
     font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
     font-size: xx-large;
     line-height: 1;
     height: 40px;
 }
 
-/*.werheader {*/
-/*    !*margin-right: 25px;*!*/
-/*    text-align-all: center;*/
-/*    position: absolute;*/
-/*    !*padding: 20px;*!*/
-/*    !*cursor: move;*!*/
-/*    !*background-color: #ffffff;*!*/
-/*    color: #000000;*/
-/*    !*border-radius: 5px;*!*/
-/*    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;*/
-/*    font-size: xxx-large;*/
-/*    line-height: 1;*/
-/*}*/
-
-/*.werheaderblue {*/
-/*    !*margin-right: 25px;*!*/
-/*    text-align-all: center;*/
-/*    position: absolute;*/
-/*    !*padding: 20px;*!*/
-/*    !*cursor: move;*!*/
-/*    !*background-color: #ffffff;*!*/
-/*    color: #005cff;*/
-/*    !*border-radius: 5px;*!*/
-/*    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;*/
-/*    font-size: xxx-large;*/
-/*    line-height: 1;*/
-/*}*/

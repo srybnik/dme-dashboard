@@ -2,6 +2,7 @@ package mcp
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/racerxdl/go-mcp23017"
@@ -14,7 +15,6 @@ const (
 	INPUT  PinMode = 0
 	OUTPUT         = 1
 )
-
 const (
 	LOW  PinLevel = false
 	HIGH          = true
@@ -26,56 +26,59 @@ const (
 )
 
 type PinValue struct {
-	Device int      `json:"device"`
-	Pin    int      `json:"pin"`
-	Value  PinLevel `json:"value"`
-	HasErr bool     `json:"has_err"`
+	Device int
+	Pin    int
+	Value  PinLevel
+	HasErr bool
+	Mode   PinMode
+}
+
+type Device interface {
+	ReadGPIOAB() (uint16, error)
+	DigitalWrite(uint8, mcp23017.PinLevel) error
+	PinMode(uint8, mcp23017.PinMode) error
+	Close() error
+}
+
+type Adapter interface {
+	Open(bus, devNum uint8) (Device, error)
 }
 
 var defaultMcpValues [Pins]PinLevel
 
 type McpManager struct {
-	mcps       [Devs]*mcp23017.Device
-	mcpErrs    [Devs]bool
-	pinLevels  [Devs][Pins]PinLevel
-	pinModes   [Devs][Pins]PinMode
-	outputChan chan PinValue
-	inputChan  chan PinValue
+	adapter   Adapter
+	mcps      [Devs]Device
+	mcpErrs   [Devs]bool
+	pinLevels [Devs][Pins]PinLevel
+	pinModes  [Devs][Pins]PinMode
+	outputCh  chan PinValue
+	inputCh   chan PinValue
+	wg        sync.WaitGroup
 }
 
-type Config struct {
-	PinModes [Devs][Pins]PinMode
-}
-
-func New(cfg *Config) *McpManager {
+func New(adapter Adapter) *McpManager {
 	return &McpManager{
-		pinModes:   cfg.PinModes,
-		outputChan: make(chan PinValue, 128),
-		inputChan:  make(chan PinValue, 128),
-	}
-}
-
-func (m *McpManager) SetConfig(cfg *Config) {
-	m.pinModes = cfg.PinModes
-	for i, mcp := range m.mcps {
-		if mcp != nil {
-			for pin, val := range m.pinModes[i] {
-				mcp.PinMode(uint8(pin), mcp23017.PinMode(val))
-			}
-		}
+		adapter:  adapter,
+		outputCh: make(chan PinValue),
+		inputCh:  make(chan PinValue),
 	}
 }
 
 func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
+	m.wg.Add(1)
 	go func() {
-		ticker := time.NewTicker(time.Millisecond * 50)
+		ticker := time.NewTicker(50 * time.Millisecond)
+		refreshTicker := time.NewTicker(3 * time.Second)
 		defer func() {
 			ticker.Stop()
+			refreshTicker.Stop()
 			for _, mcp := range m.mcps {
 				if mcp != nil {
-					mcp.Close()
+					_ = mcp.Close()
 				}
 			}
+			m.wg.Done()
 		}()
 
 		for {
@@ -85,10 +88,10 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 			case <-ticker.C:
 				for i, mcp := range m.mcps {
 					if mcp == nil {
-						mcp, _ = mcp23017.Open(0, uint8(i))
+						mcp, _ = m.adapter.Open(0, uint8(i))
 						if mcp != nil {
 							for pin, val := range m.pinModes[i] {
-								mcp.PinMode(uint8(pin), mcp23017.PinMode(val))
+								_ = mcp.PinMode(uint8(pin), mcp23017.PinMode(val))
 							}
 							m.mcps[i] = mcp
 						}
@@ -97,18 +100,34 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 					res, hasErr := mcpRead(mcp)
 					if hasErr {
 						m.mcps[i] = nil
-						mcp.Close()
+						_ = mcp.Close()
 					}
 					for pin, val := range m.pinLevels[i] {
 						if val != res[pin] || m.mcpErrs[i] != hasErr {
-							m.inputChan <- PinValue{
+							m.inputCh <- PinValue{
 								Device: i,
 								Pin:    pin,
 								Value:  res[pin],
 								HasErr: hasErr,
+								Mode:   m.pinModes[i][pin],
 							}
 							m.pinLevels[i][pin] = res[pin]
 							m.mcpErrs[i] = hasErr
+						}
+					}
+				}
+			case <-refreshTicker.C:
+				for i, mcp := range m.mcps {
+					if mcp == nil {
+						continue
+					}
+					for pin := range m.pinLevels[i] {
+						m.inputCh <- PinValue{
+							Device: i,
+							Pin:    pin,
+							Value:  m.pinLevels[i][pin],
+							HasErr: m.mcpErrs[i],
+							Mode:   m.pinModes[i][pin],
 						}
 					}
 				}
@@ -116,23 +135,37 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 		}
 	}()
 
+	m.wg.Add(1)
 	go func() {
+		defer m.wg.Done()
+
 		for {
 			select {
 			case <-ctx.Done():
 				return
-			case val := <-m.outputChan:
+			case val := <-m.outputCh:
+				if m.pinModes[val.Device][val.Pin] != val.Mode {
+					m.pinModes[val.Device][val.Pin] = val.Mode
+					if m.mcps[val.Device] != nil {
+						_ = m.mcps[val.Device].PinMode(uint8(val.Pin), mcp23017.PinMode(val.Mode))
+					}
+				}
+
 				if m.pinModes[val.Device][val.Pin] == OUTPUT && m.mcps[val.Device] != nil {
-					m.mcps[val.Device].DigitalWrite(uint8(val.Pin), !mcp23017.PinLevel(val.Value)) //надо инверс почемуто
+					_ = m.mcps[val.Device].DigitalWrite(uint8(val.Pin), !mcp23017.PinLevel(val.Value)) //надо инверс почемуто
 				}
 			}
 		}
 	}()
 
-	return m.inputChan, m.outputChan
+	return m.inputCh, m.outputCh
 }
 
-func mcpRead(mcp *mcp23017.Device) ([Pins]PinLevel, bool) {
+func (m *McpManager) Wait() {
+	m.wg.Wait()
+}
+
+func mcpRead(mcp Device) ([Pins]PinLevel, bool) {
 	mcpValues := defaultMcpValues
 	if mcp == nil {
 		return mcpValues, false
@@ -151,4 +184,11 @@ func mcpRead(mcp *mcp23017.Device) ([Pins]PinLevel, bool) {
 		}
 	}
 	return mcpValues, false
+}
+
+func GetMode(input bool) PinMode {
+	if input {
+		return INPUT
+	}
+	return OUTPUT
 }
