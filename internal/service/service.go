@@ -141,7 +141,6 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-
 		time.Sleep(10 * time.Second)
 		for {
 			select {
@@ -200,7 +199,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
-		ticker := time.NewTicker(3 * time.Second)
+		ticker := time.NewTicker(5 * time.Second)
 		defer ticker.Stop()
 
 		var preErr bool
@@ -212,13 +211,9 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			case <-ticker.C:
 				var hasErr bool
 				for _, item := range s.itemIDs {
-					if item.HasErr {
+					if item.HasErr && !item.Wait {
 						hasErr = true
-					}
-				}
-				for _, item := range s.tabloItemIDs {
-					if item.HasErr && item.IsActive {
-						hasErr = true
+						break
 					}
 				}
 

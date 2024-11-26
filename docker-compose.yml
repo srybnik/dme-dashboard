@@ -6,6 +6,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /home/dme-dashboard:/config
+      - /home/dme-dashboard/config:/root/config
     devices:
       - /dev/i2c-0:/dev/i2c-0

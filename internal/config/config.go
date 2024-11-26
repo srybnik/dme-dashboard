@@ -43,6 +43,12 @@ func NewConfig() (*Config, error) {
 	var cfg Config
 	file, err := os.Open(cfgFileName)
 	if err != nil {
+		if err = cfg.Update([]byte(defaultCfgBody)); err != nil {
+			return nil, err
+		}
+		file, err = os.Open(cfgFileName)
+	}
+	if err != nil {
 		return nil, fmt.Errorf("can not open file: %w", err)
 	}
 	err = json.NewDecoder(file).Decode(&cfg)
