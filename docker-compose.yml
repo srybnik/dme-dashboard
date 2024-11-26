@@ -1,0 +1,11 @@
+
+services:
+  dme-dashboard:
+    image: ssteeleggs/dme-dashboard:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - /home/dme-dashboard:/config
+    devices:
+      - /dev/i2c-0:/dev/i2c-0

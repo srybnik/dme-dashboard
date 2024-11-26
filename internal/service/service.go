@@ -83,7 +83,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	}
 
 	for _, v := range s.cfg.TabloItems {
-		item := NewTabloItem(v.ID, v.BoardID, v.PinID, v.ManageBoardID, v.ManagePinID, v.IsInverse, s.msgCh, mcpOutputCh)
+		item := NewTabloItem(v.ID, v.BoardID, v.PinID, v.ManageBoardID, v.ManagePinID, v.IsInverse, v.IsActive, s.msgCh, mcpOutputCh)
 		s.tabloItemKeys[ItemMcpKey{v.BoardID, v.PinID}] = item
 		s.tabloItemIDs[v.ID] = item
 
@@ -127,7 +127,9 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			case <-ticker.C:
 			}
 			for _, item := range s.itemIDs {
-				item.SendMsgCurrentValue()
+				if !item.Wait {
+					item.SendMsgCurrentValue()
+				}
 			}
 			for _, item := range s.tabloItemIDs {
 				item.SendMsgCurrentValue()
@@ -139,6 +141,8 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
+
+		time.Sleep(10 * time.Second)
 		for {
 			select {
 			case <-ctx.Done():
@@ -218,23 +222,24 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 					}
 				}
 
+				var color = "timer"
+				if hasErr {
+					color = "redtimer"
+				}
+
+				s.msgCh <- models.Msg{
+					ID:     2,
+					TypeID: ItemTypeErr,
+					Value:  color,
+				}
+
 				if !hasErr {
 					preErr = false
-					s.msgCh <- models.Msg{
-						ID:     2,
-						TypeID: ItemTypeErr,
-						Value:  "timer",
-					}
 					continue
 				}
 
 				if hasErr && !preErr {
 					preErr = true
-					s.msgCh <- models.Msg{
-						ID:     2,
-						TypeID: ItemTypeErr,
-						Value:  "redtimer",
-					}
 					select {
 					case s.signalCh <- struct{}{}:
 					default:
@@ -244,12 +249,6 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 		}
 	}()
 
-	go func() {
-		for range 20 {
-			s.StopSignal()
-			time.Sleep(500 * time.Millisecond)
-		}
-	}()
 }
 
 func (s *Service) Wait() {

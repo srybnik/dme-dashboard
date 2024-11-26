@@ -37,6 +37,7 @@ func NewTabloItem(
 	manageBoardID int,
 	managePinID int,
 	isInverse bool,
+	isActive bool,
 	msgCh chan models.Msg,
 	mcpOutputCh chan mcp.PinValue,
 ) *TabloItem {
@@ -44,6 +45,7 @@ func NewTabloItem(
 		ID:            id,
 		TypeID:        ItemTypeTablo,
 		IsInverse:     isInverse,
+		IsActive:      isActive,
 		BoardID:       boardID,
 		PinID:         pinID,
 		ManageBoardID: manageBoardID,

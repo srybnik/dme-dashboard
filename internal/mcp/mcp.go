@@ -47,21 +47,22 @@ type Adapter interface {
 var defaultMcpValues [Pins]PinLevel
 
 type McpManager struct {
-	adapter   Adapter
-	mcps      [Devs]Device
-	mcpErrs   [Devs]bool
-	pinLevels [Devs][Pins]PinLevel
-	pinModes  [Devs][Pins]PinMode
-	outputCh  chan PinValue
-	inputCh   chan PinValue
-	wg        sync.WaitGroup
+	adapter         Adapter
+	mcps            [Devs]Device
+	mcpErrs         [Devs]bool
+	pinLevels       [Devs][Pins]PinLevel
+	pinOutputLevels [Devs][Pins]PinLevel
+	pinModes        [Devs][Pins]PinMode
+	outputCh        chan PinValue
+	inputCh         chan PinValue
+	wg              sync.WaitGroup
 }
 
 func New(adapter Adapter) *McpManager {
 	return &McpManager{
 		adapter:  adapter,
-		outputCh: make(chan PinValue),
-		inputCh:  make(chan PinValue),
+		outputCh: make(chan PinValue, 128),
+		inputCh:  make(chan PinValue, 128),
 	}
 }
 
@@ -88,13 +89,19 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 			case <-ticker.C:
 				for i, mcp := range m.mcps {
 					if mcp == nil {
-						mcp, _ = m.adapter.Open(0, uint8(i))
-						if mcp != nil {
-							for pin, val := range m.pinModes[i] {
-								_ = mcp.PinMode(uint8(pin), mcp23017.PinMode(val))
-							}
-							m.mcps[i] = mcp
+						var err error
+						mcp, err = m.adapter.Open(0, uint8(i))
+						if err != nil {
+							m.mcpErrs[i] = true
+							continue
 						}
+						for pin, val := range m.pinModes[i] {
+							_ = mcp.PinMode(uint8(pin), mcp23017.PinMode(val))
+							if val == OUTPUT {
+								_ = mcp.DigitalWrite(uint8(pin), !mcp23017.PinLevel(m.pinOutputLevels[i][pin]))
+							}
+						}
+						m.mcps[i] = mcp
 					}
 
 					res, hasErr := mcpRead(mcp)
@@ -117,10 +124,7 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 					}
 				}
 			case <-refreshTicker.C:
-				for i, mcp := range m.mcps {
-					if mcp == nil {
-						continue
-					}
+				for i := range m.mcps {
 					for pin := range m.pinLevels[i] {
 						m.inputCh <- PinValue{
 							Device: i,
@@ -150,9 +154,10 @@ func (m *McpManager) Run(ctx context.Context) (chan PinValue, chan PinValue) {
 						_ = m.mcps[val.Device].PinMode(uint8(val.Pin), mcp23017.PinMode(val.Mode))
 					}
 				}
+				m.pinOutputLevels[val.Device][val.Pin] = val.Value
 
 				if m.pinModes[val.Device][val.Pin] == OUTPUT && m.mcps[val.Device] != nil {
-					_ = m.mcps[val.Device].DigitalWrite(uint8(val.Pin), !mcp23017.PinLevel(val.Value)) //надо инверс почемуто
+					_ = m.mcps[val.Device].DigitalWrite(uint8(val.Pin), !mcp23017.PinLevel(val.Value))
 				}
 			}
 		}
@@ -168,7 +173,7 @@ func (m *McpManager) Wait() {
 func mcpRead(mcp Device) ([Pins]PinLevel, bool) {
 	mcpValues := defaultMcpValues
 	if mcp == nil {
-		return mcpValues, false
+		return mcpValues, true
 	}
 
 	res, err := mcp.ReadGPIOAB()

@@ -28,9 +28,8 @@ type Item struct {
 	Value    bool
 	HasErr   bool
 
-	wait  bool
-	blink bool
-	mu    sync.Mutex
+	Wait bool
+	mu   sync.Mutex
 
 	msgCh       chan models.Msg
 	signalCh    chan struct{}
@@ -138,8 +137,8 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 		return
 	}
 
-	if !c.wait {
-		c.wait = true
+	if !c.Wait {
+		c.Wait = true
 
 		go func() {
 			timer := time.NewTimer(c.dur)
@@ -150,7 +149,7 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 			case <-timer.C:
 				c.mu.Lock()
 				defer c.mu.Unlock()
-				c.wait = false
+				c.Wait = false
 
 				if c.Value == val && c.HasErr == err {
 					if c.stopBlink != nil {
@@ -187,7 +186,7 @@ func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
 }
 
 func (c *Item) Color() string {
-	if c.HasErr {
+	if c.HasErr && c.TypeID != ItemTypeSlider {
 		return "redblink"
 	}
 
@@ -210,7 +209,7 @@ func (c *Item) Color() string {
 }
 
 func (c *Item) ColorBlink() string {
-	if c.HasErr {
+	if c.HasErr && c.TypeID != ItemTypeSlider {
 		return "red"
 	}
 

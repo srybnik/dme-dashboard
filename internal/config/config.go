@@ -37,7 +37,7 @@ type Config struct {
 	Comment string `json:"comment"`
 }
 
-const cfgFileName = "cfg.json"
+const cfgFileName = "config/cfg.json"
 
 func NewConfig() (*Config, error) {
 	var cfg Config
