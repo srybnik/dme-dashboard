@@ -14,7 +14,10 @@ window.addEventListener("load", function (evt) {
 
     ws = new WebSocket(window.location.origin+"/ws");
     ws.onmessage = function (evt) {
-        handle(evt.data)
+        new Promise(() => setTimeout(() => {
+            handle(evt.data)
+        }, 2000));
+
     }
     ws.onerror = function (evt) {
         // console.error("ERROR: " + evt.data)
@@ -85,14 +88,18 @@ function handle(str) {
 
 
 function startSignal() {
-    var s = document.getElementById("Signal");
-    s.play()
+    new Promise(() => setTimeout(() => {
+        var s = document.getElementById("Signal");
+        s.play()
+    }, 5000));
 }
 
 function stopSignal() {
-    var s = document.getElementById("Signal");
-    s.pause()
-    s.load()
+    new Promise(() => setTimeout(() => {
+        var s = document.getElementById("Signal");
+        s.pause()
+        s.load()
+    }, 5000));
 }
 
 function renderVPP() {
