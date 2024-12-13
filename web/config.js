@@ -197,7 +197,7 @@ window.addEventListener("load", function (evt) {
     updateActiveBoards();
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', window.location.origin+"/cfg");
+    xhr.open('GET', "http://" + location.host + "/cfg");
     xhr.responseType = 'json';
     xhr.send();
     xhr.onload = function() {
@@ -230,7 +230,7 @@ function addNewObjectRow() {
 
 function updateActiveBoards(){
     var req = new XMLHttpRequest();
-    req.open('GET', window.location.origin+"/boards");
+    req.open('GET', "http://" + location.host + "/boards");
     req.responseType = 'json';
     req.send();
     req.onload = function() {
@@ -872,7 +872,7 @@ function updateConfig() {
     var cfg = config()
 
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', window.location.origin+"/cfg");
+    xhr.open('POST', "http://" + location.host + "/cfg");
     xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     xhr.send(JSON.stringify(cfg));
 

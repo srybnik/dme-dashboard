@@ -4,7 +4,7 @@ var ws
 
 window.addEventListener("load", function (evt) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', window.location.origin+"/cfg");
+    xhr.open('GET', "http://" + location.host + "/cfg");
     xhr.responseType = 'json';
     xhr.send();
     xhr.onload = function() {
@@ -12,7 +12,7 @@ window.addEventListener("load", function (evt) {
         render(xhr.response);
     };
 
-    ws = new WebSocket(window.location.origin+"/ws");
+    ws = new WebSocket("ws://" + location.host + "/ws");
     ws.onmessage = function (evt) {
         new Promise(() => setTimeout(() => {
             handle(evt.data)
@@ -34,7 +34,7 @@ window.addEventListener("load", function (evt) {
     };
 
     document.getElementById("config").onclick = function() {
-        window.open(window.location.origin+"/config");
+        window.open("http://" + location.host +"/config");
     };
 
     setInterval(ping, 5000)
@@ -126,7 +126,7 @@ async function ping() {
     try {
         const c = new AbortController();
         const id = setTimeout(() => c.abort(), 2000);
-        const r = await fetch(window.location.origin+"/ping", {signal: c.signal});
+        const r = await fetch("http://" + location.host + "/ping", {signal: c.signal});
         clearTimeout(id);
         if (globalError) {
             window.location.reload()
