@@ -35,6 +35,7 @@ type Item struct {
 	signalCh    chan struct{}
 	mcpOutputCh chan mcp.PinValue
 	stopBlink   context.CancelFunc
+	stopWait    context.CancelFunc
 }
 
 func NewItem(id int,
@@ -137,31 +138,43 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 		return
 	}
 
-	if !c.Wait {
-		c.Wait = true
-
-		go func() {
-			timer := time.NewTimer(c.dur)
-			defer timer.Stop()
-			select {
-			case <-ctx.Done():
-				return
-			case <-timer.C:
-				c.mu.Lock()
-				defer c.mu.Unlock()
-				c.Wait = false
-
-				if c.Value == val && c.HasErr == err {
-					if c.stopBlink != nil {
-						c.stopBlink()
-					}
-					bCtx, cancel := context.WithCancel(ctx)
-					c.stopBlink = cancel
-					c.StartBlink(bCtx)
-				}
-			}
-		}()
+	if c.stopWait != nil {
+		c.stopWait()
 	}
+	waitCtx, cancel := context.WithCancel(ctx)
+	c.stopWait = cancel
+
+	if c.PreValue == val && c.HasErr == err {
+		return
+	}
+
+	//if !c.Wait {
+	//	c.Wait = true
+
+	go func() {
+		timer := time.NewTimer(c.dur)
+		defer timer.Stop()
+		select {
+		case <-ctx.Done():
+			return
+		case <-waitCtx.Done():
+			return
+		case <-timer.C:
+			c.mu.Lock()
+			defer c.mu.Unlock()
+			c.Wait = false
+
+			if c.Value == val && c.HasErr == err {
+				if c.stopBlink != nil {
+					c.stopBlink()
+				}
+				bCtx, cancel := context.WithCancel(ctx)
+				c.stopBlink = cancel
+				c.StartBlink(bCtx)
+			}
+		}
+	}()
+	//}
 }
 
 func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
