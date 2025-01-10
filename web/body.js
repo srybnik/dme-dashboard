@@ -43,6 +43,14 @@ window.addEventListener("load", function (evt) {
         }
     });
 
+    document.oncontextmenu = function () {
+        return false;
+    }
+    document.onclick = function () {
+        menu = document.getElementById('menu')
+        menu.classList.remove('show')
+    }
+
     setInterval(ping, 5000)
 });
 
@@ -196,6 +204,9 @@ function render(cfg) {
             }
             itemDiv.setAttribute('id', item.id)
             itemDiv.innerHTML = item.name
+            itemDiv.oncontextmenu = function () {
+                contextmenu(event, this.id);
+            }
             itemBody.appendChild(itemDiv)
         } else {
 
@@ -224,9 +235,39 @@ function render(cfg) {
             }
             var span = document.createElement('span')
             span.setAttribute('class', 'slider round')
+            span.setAttribute('id', item.id)
+            span.oncontextmenu = function () {
+                contextmenu(event, this.id);
+            }
             label.appendChild(span)
         }
         itemBody.appendChild(document.createElement('p'))
     }
 }
 
+function contextmenu(evt, elementID) {
+    fetch("http://" + location.host + "/cfg")
+        .then((response) => {
+            return response.json();
+        })
+        .then((data) => {
+            // console.log(elementID)
+
+            for (var item of data.items){
+                if (item.id == elementID){
+                    pin = "PA"+item.pinID
+                    if (item.pinID > 7){
+                        pin = "PB"+(item.pinID-8)
+                    }
+                    name = item.name + "<hr>" + "Плата: " + item.boardID +"  Пин: " + pin
+                    document.getElementById('contextMenu').innerHTML = name
+                }
+            }
+
+            evt.preventDefault();
+            menu = document.getElementById('menu')
+            menu.style.marginLeft = (evt.clientX - 15) + "px";
+            menu.style.marginTop = (evt.clientY - 1040) + "px";
+            menu.classList.add('show')
+        })
+}
