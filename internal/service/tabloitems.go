@@ -27,7 +27,13 @@ type TabloItem struct {
 	msgCh       chan models.Msg
 	mcpOutputCh chan mcp.PinValue
 
-	mu sync.Mutex
+	repo Repo
+	mu   sync.Mutex
+}
+
+type Repo interface {
+	SetValue(id int, value bool)
+	GetValue(id int) bool
 }
 
 func NewTabloItem(
@@ -40,6 +46,7 @@ func NewTabloItem(
 	isActive bool,
 	msgCh chan models.Msg,
 	mcpOutputCh chan mcp.PinValue,
+	repo Repo,
 ) *TabloItem {
 	return &TabloItem{
 		ID:            id,
@@ -52,6 +59,7 @@ func NewTabloItem(
 		ManagePinID:   managePinID,
 		msgCh:         msgCh,
 		mcpOutputCh:   mcpOutputCh,
+		repo:          repo,
 	}
 }
 
@@ -94,6 +102,34 @@ func (t *TabloItem) SetToMcpValue(ctx context.Context, val bool) {
 		Device: t.BoardID,
 		Pin:    t.PinID,
 		Value:  mcp.PinLevel(val),
+		Mode:   mcp.OUTPUT,
+	}
+
+	select {
+	case <-ctx.Done():
+	case t.mcpOutputCh <- msg:
+	}
+
+	msg = mcp.PinValue{
+		Device: t.ManageBoardID,
+		Pin:    t.ManagePinID,
+		Value:  mcp.PinLevel(t.IsActive),
+		Mode:   mcp.OUTPUT,
+	}
+
+	select {
+	case <-ctx.Done():
+	case t.mcpOutputCh <- msg:
+	}
+
+	t.repo.SetValue(t.ID, val)
+}
+
+func (t *TabloItem) Init(ctx context.Context) {
+	msg := mcp.PinValue{
+		Device: t.BoardID,
+		Pin:    t.PinID,
+		Value:  mcp.PinLevel(t.repo.GetValue(t.ID)),
 		Mode:   mcp.OUTPUT,
 	}
 

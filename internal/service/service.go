@@ -9,6 +9,7 @@ import (
 	"github.com/srybnik/dme-dashboard/internal/config"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
 	"github.com/srybnik/dme-dashboard/internal/models"
+	"github.com/srybnik/dme-dashboard/internal/repo"
 	"sync"
 	"time"
 )
@@ -24,8 +25,9 @@ const (
 )
 
 type Service struct {
-	cfg *config.Config
-	mcp *mcp.McpManager
+	cfg  *config.Config
+	mcp  *mcp.McpManager
+	repo *repo.Repo
 
 	conns map[*websocket.Conn]struct{}
 	mu    sync.RWMutex
@@ -48,10 +50,11 @@ type Service struct {
 	mcpErr [mcp.Devs]bool
 }
 
-func New(cfg *config.Config, m *mcp.McpManager) *Service {
+func New(cfg *config.Config, m *mcp.McpManager, r *repo.Repo) *Service {
 	return &Service{
 		cfg:   cfg,
 		mcp:   m,
+		repo:  r,
 		conns: make(map[*websocket.Conn]struct{}),
 
 		msgCh:        make(chan models.Msg, 50),
@@ -74,20 +77,20 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 
 	for _, v := range s.cfg.Items {
 		if v.IsActive {
-			item := NewItem(v.ID, v.TypeID, v.BoardID, v.PinID, v.Duration, v.IsInverse, v.IsInput, s.msgCh, s.signalCh, mcpOutputCh)
+			item := NewItem(v.ID, v.TypeID, v.BoardID, v.PinID, v.Duration, v.IsInverse, v.IsInput, s.msgCh, s.signalCh, mcpOutputCh, s.repo)
 			s.itemKeys[ItemMcpKey{v.BoardID, v.PinID}] = item
 			s.itemIDs[v.ID] = item
 
-			item.SetToMcpValue(ctx, false) // TODO: заполнить значение из бд
+			item.Init(ctx)
 		}
 	}
 
 	for _, v := range s.cfg.TabloItems {
-		item := NewTabloItem(v.ID, v.BoardID, v.PinID, v.ManageBoardID, v.ManagePinID, v.IsInverse, v.IsActive, s.msgCh, mcpOutputCh)
+		item := NewTabloItem(v.ID, v.BoardID, v.PinID, v.ManageBoardID, v.ManagePinID, v.IsInverse, v.IsActive, s.msgCh, mcpOutputCh, s.repo)
 		s.tabloItemKeys[ItemMcpKey{v.BoardID, v.PinID}] = item
 		s.tabloItemIDs[v.ID] = item
 
-		item.SetToMcpValue(ctx, false) // TODO: заполнить значение из бд
+		item.Init(ctx)
 	}
 
 	// Чтение изменений из mcp

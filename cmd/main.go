@@ -12,6 +12,7 @@ import (
 	"github.com/srybnik/dme-dashboard/internal/config"
 	"github.com/srybnik/dme-dashboard/internal/handler"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
+	"github.com/srybnik/dme-dashboard/internal/repo"
 	"github.com/srybnik/dme-dashboard/internal/service"
 )
 
@@ -30,7 +31,8 @@ func main() {
 	defer cancel()
 
 	mgr := mcp.New(mcp.NewMcpAdapter(debug))
-	svc := service.New(cfg, mgr)
+	r := repo.New()
+	svc := service.New(cfg, mgr, r)
 	hdlr := handler.New(svc)
 
 	router := echo.New()

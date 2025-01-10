@@ -36,6 +36,8 @@ type Item struct {
 	mcpOutputCh chan mcp.PinValue
 	stopBlink   context.CancelFunc
 	stopWait    context.CancelFunc
+
+	repo Repo
 }
 
 func NewItem(id int,
@@ -48,6 +50,7 @@ func NewItem(id int,
 	msgCh chan models.Msg,
 	signalCh chan struct{},
 	mcpOutputCh chan mcp.PinValue,
+	repo Repo,
 ) *Item {
 	return &Item{
 		ID:          id,
@@ -60,6 +63,7 @@ func NewItem(id int,
 		msgCh:       msgCh,
 		signalCh:    signalCh,
 		mcpOutputCh: mcpOutputCh,
+		repo:        repo,
 	}
 }
 
@@ -149,7 +153,7 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 	}
 
 	//if !c.Wait {
-	//	c.Wait = true
+	c.Wait = true
 
 	go func() {
 		timer := time.NewTimer(c.dur)
@@ -158,6 +162,9 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 		case <-ctx.Done():
 			return
 		case <-waitCtx.Done():
+			c.mu.Lock()
+			defer c.mu.Unlock()
+			c.Wait = false
 			return
 		case <-timer.C:
 			c.mu.Lock()
@@ -189,6 +196,22 @@ func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
 		Device: c.BoardID,
 		Pin:    c.PinID,
 		Value:  mcp.PinLevel(val),
+		Mode:   mcp.GetMode(c.IsInput),
+	}
+
+	select {
+	case <-ctx.Done():
+	case c.mcpOutputCh <- msg:
+	}
+
+	c.repo.SetValue(c.ID, val)
+}
+
+func (c *Item) Init(ctx context.Context) {
+	msg := mcp.PinValue{
+		Device: c.BoardID,
+		Pin:    c.PinID,
+		Value:  mcp.PinLevel(c.repo.GetValue(c.ID)),
 		Mode:   mcp.GetMode(c.IsInput),
 	}
 

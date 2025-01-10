@@ -1,37 +1,58 @@
 package repo
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/openlyinc/civil"
-	"github.com/srybnik/dme-dashboard/internal/databases"
-	"time"
+	"os"
+	"sync"
 )
 
-type Log struct {
-	Date time.Time `db:"dt"`
-	Msg  string    `db:"msg"`
-}
-
 type Repo struct {
-	db *databases.Connection
+	Cache map[int]bool `json:"data,omitempty"`
+	mu    sync.RWMutex
 }
 
-func New(db *databases.Connection) *Repo {
-	return &Repo{db: db}
+const fileName = "config/values.json"
+
+func New() *Repo {
+	m := make(map[int]bool)
+	file, err := os.Open(fileName)
+	if err == nil {
+		_ = json.NewDecoder(file).Decode(&m)
+	}
+	return &Repo{Cache: m}
 }
 
-func (r *Repo) Event(format string, a ...interface{}) error {
-	msg := fmt.Sprintf(format, a...)
-	query := "insert into events(dt, msg) values ($1, $2)"
-	_, err := r.db.Exec(query, time.Now(), msg)
-	return err
+func (r *Repo) SetValue(id int, value bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.Cache[id] = value
+	go r.saveValues()
 }
 
-func (r *Repo) GetData(startDate civil.Date, endDate civil.Date) ([]Log, error) {
-	query := `select dt, msg
-		from events
-		where dt between $1 and $2`
-	var data []Log
-	err := r.db.Select(&data, query, startDate, endDate.AddDays(1))
-	return data, err
+func (r *Repo) GetValue(id int) bool {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	return r.Cache[id]
+}
+
+func (r *Repo) saveValues() {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	body, err := json.Marshal(&r.Cache)
+	if err != nil {
+		fmt.Println("can not marshal cache:", err)
+		return
+	}
+
+	file, err := os.Create(fileName)
+	if err != nil {
+		fmt.Println("can not create file:", err)
+		return
+	}
+
+	if _, err = file.Write(body); err != nil {
+		fmt.Println("can not write file:", err)
+	}
 }

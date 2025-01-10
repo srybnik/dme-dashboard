@@ -37,6 +37,12 @@ window.addEventListener("load", function (evt) {
         window.open("http://" + location.host +"/config");
     };
 
+    document.addEventListener('keydown', function(event) {
+        if (event.code === 'Space') {
+            wsSend("1", 4, false);
+        }
+    });
+
     setInterval(ping, 5000)
 });
 
