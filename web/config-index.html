@@ -53,11 +53,12 @@
 
         <textarea id="comment" rows="50" cols="50">Какойто текст...</textarea>
 
+        <input type="file" id="openFile" style="visibility: hidden;" accept="*,.json" onchange="openFile(this.files)">
 
         <div class="footer">
             <button class="btn btncfg" onclick="updateConfig()">Применить ✅</button>
-            <button class="btn btncfg" onclick="">Загрузить из файла 📁</button>
-            <button class="btn btncfg" onclick="">Сохранить в файл 💾</button>
+            <button class="btn btncfg" onclick="document.getElementById('openFile').click();">Загрузить из файла 📁</button>
+            <button class="btn btncfg" onclick="saveFile()">Сохранить в файл 💾</button>
         </div>
     </div>
 

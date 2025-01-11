@@ -201,28 +201,31 @@ window.addEventListener("load", function (evt) {
     xhr.responseType = 'json';
     xhr.send();
     xhr.onload = function() {
-
-        var cfg = xhr.response;
-
-        for (var item of cfg.tabloItems){
-            addTabloRow( item.id, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
-        }
-        if (cfg.tabloItems.length == 0){
-            addTabloRow( 11, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
-            addTabloRow( 12, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
-        }
-
-        for (var item of cfg.objects){
-            addObjectRow( item.objectID, item.objectName, item.panelID);
-        }
-
-        for (var item of cfg.items){
-            additemRow(item.id, item.name, item.typeID, item.objectID, item.boardID, item.pinID, item.isInput, item.isActive, item.isInverse, item.duration);
-        }
-
-        document.getElementById('comment').value = cfg.comment
+        addRows(xhr.response)
     };
 });
+
+function addRows(cfg) {
+
+    for (var item of cfg.tabloItems){
+        addTabloRow( item.id, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
+    }
+    if (cfg.tabloItems.length == 0){
+        addTabloRow( 11, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
+        addTabloRow( 12, item.name, item.boardID, item.pinID, item.manageBoardID,item.managePinID,item.isActive, item.isInverse);
+    }
+
+    for (var item of cfg.objects){
+        addObjectRow( item.objectID, item.objectName, item.panelID);
+    }
+
+    for (var item of cfg.items){
+        additemRow(item.id, item.name, item.typeID, item.objectID, item.boardID, item.pinID, item.isInput, item.isActive, item.isInverse, item.duration);
+    }
+
+    document.getElementById('comment').value = cfg.comment
+}
+
 
 function addNewObjectRow() {
     addObjectRow( getNewID(), 'Новый', 1);
@@ -890,4 +893,40 @@ function openDialog(str) {
     var dialogText = document.getElementById('dialogtext');
     dialogText.innerText = str;
     dialog.showModal();
+}
+
+
+
+function openFile(files) {
+    if (files.length != 1){
+        openDialog("Файл не выбран")
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        updateActiveBoards();
+
+        document.getElementById('items-body').innerHTML = '';
+        document.getElementById('tablo-items-body').innerHTML = '';
+        document.getElementById('objects-body').innerHTML = '';
+
+        addRows(JSON.parse(e.currentTarget.result))
+    };
+    reader.readAsText(files[0]);
+
+}
+
+function saveFile(){
+    var cfg = config()
+    const b = new Blob([JSON.stringify(cfg)], {type: 'application/json'});
+    const url = window.URL.createObjectURL(b);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'config.json';
+    a.type = 'application/json';
+    a.addEventListener('click', () => {
+        setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+    })
+    a.click()
 }
