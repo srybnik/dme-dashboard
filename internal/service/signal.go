@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/srybnik/dme-dashboard/internal/models"
 	"time"
+
+	"github.com/srybnik/dme-dashboard/internal/models"
 )
 
 func (s *Service) StopSignal() {

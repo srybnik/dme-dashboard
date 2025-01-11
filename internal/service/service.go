@@ -4,14 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/gorilla/websocket"
 	"github.com/rs/zerolog/log"
 	"github.com/srybnik/dme-dashboard/internal/config"
 	"github.com/srybnik/dme-dashboard/internal/mcp"
 	"github.com/srybnik/dme-dashboard/internal/models"
 	"github.com/srybnik/dme-dashboard/internal/repo"
-	"sync"
-	"time"
 )
 
 const (

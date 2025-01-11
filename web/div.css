@@ -120,7 +120,8 @@
     text-align: center;
     border: 2px solid #bcbcbc;
     border-radius: 7px;
-    width: 120px;
+    /*width: 120px;*/
+    width: auto;
 }
 .mydiv2 {
     position: absolute;
@@ -161,6 +162,8 @@
     font-size: xx-large;
     line-height: 1;
     /*height: 80px;*/
+    min-width: 80px;
+    width: auto;
 }
 .mydivheader2 {
     padding-top: 13px;
