@@ -208,10 +208,13 @@ func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
 }
 
 func (c *Item) Init(ctx context.Context) {
+	c.Value = c.repo.GetValue(c.ID)
+	c.PreValue = c.Value
+
 	msg := mcp.PinValue{
 		Device: c.BoardID,
 		Pin:    c.PinID,
-		Value:  mcp.PinLevel(c.repo.GetValue(c.ID)),
+		Value:  mcp.PinLevel(c.Value),
 		Mode:   mcp.GetMode(c.IsInput),
 	}
 

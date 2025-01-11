@@ -61,8 +61,8 @@ type McpManager struct {
 func New(adapter Adapter) *McpManager {
 	return &McpManager{
 		adapter:  adapter,
-		outputCh: make(chan PinValue, 128),
-		inputCh:  make(chan PinValue, 128),
+		outputCh: make(chan PinValue),
+		inputCh:  make(chan PinValue),
 	}
 }
 

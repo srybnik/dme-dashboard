@@ -14,10 +14,7 @@ window.addEventListener("load", function (evt) {
 
     ws = new WebSocket("ws://" + location.host + "/ws");
     ws.onmessage = function (evt) {
-        new Promise(() => setTimeout(() => {
-            handle(evt.data)
-        }, 2000));
-
+             handle(evt.data)
     }
     ws.onerror = function (evt) {
         // console.error("ERROR: " + evt.data)
@@ -102,18 +99,18 @@ function handle(str) {
 
 
 function startSignal() {
-    new Promise(() => setTimeout(() => {
+    // new Promise(() => setTimeout(() => {
         var s = document.getElementById("Signal");
         s.play()
-    }, 5000));
+    // }, 5000));
 }
 
 function stopSignal() {
-    new Promise(() => setTimeout(() => {
+    // new Promise(() => setTimeout(() => {
         var s = document.getElementById("Signal");
         s.pause()
         s.load()
-    }, 5000));
+    // }, 5000));
 }
 
 function renderVPP() {

@@ -126,10 +126,11 @@ func (t *TabloItem) SetToMcpValue(ctx context.Context, val bool) {
 }
 
 func (t *TabloItem) Init(ctx context.Context) {
+	t.Value = t.repo.GetValue(t.ID)
 	msg := mcp.PinValue{
 		Device: t.BoardID,
 		Pin:    t.PinID,
-		Value:  mcp.PinLevel(t.repo.GetValue(t.ID)),
+		Value:  mcp.PinLevel(t.Value),
 		Mode:   mcp.OUTPUT,
 	}
 
