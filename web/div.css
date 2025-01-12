@@ -8,7 +8,8 @@
     border: 2px solid #6cf855;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #c2fca1 0%, #8bf87e 60%, #3af527 100%);
 }
 
@@ -22,7 +23,8 @@
     border: 2px solid #4ca239;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #77b868 0%, #4f984a 60%, #1c8000 100%);
 }
 
@@ -36,7 +38,8 @@
     border: 2px solid #b5b5b5;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #efefef 0%, #d5d5d5 60%, #a5a5a5 100%);
 }
 
@@ -50,7 +53,8 @@
     border: 2px solid #b5b5b5;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     /*background-image: -webkit-linear-gradient(top, #fca1a1 0%, #f87e7e 60%, #ff0000 100%);*/
 }
 
@@ -64,7 +68,8 @@
     border: 2px solid #f85555;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #fca1a1 0%, #f87e7e 60%, #ff0000 100%);
 }
 
@@ -78,7 +83,8 @@
     border: 2px solid #a23939;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #b86868 0%, #984a4a 60%, #800000 100%);
 }
 
@@ -92,7 +98,8 @@
     border: 2px solid #f8a155;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #fccba1 0%, #f8af7e 60%, #ff5900 100%);
 }
 
@@ -106,7 +113,8 @@
     border: 2px solid #2d2d2d;
     /*border-radius: 7px;*/
     border-radius: 34px;
-    font-size: 15px;
+    /*font-size: 15px;*/
+    font: small-caps bold 19px/1 system-ui;
     background-image: -webkit-linear-gradient(top, #c5c5c5 0%, #7c7c7c 60%, #000000 100%);
 }
 
@@ -146,8 +154,9 @@
     color: #000000;
     border-radius: 5px;
     border: 2px solid #bcbcbc;
-    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-    font-size: xx-large;
+    /*font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;*/
+    font: small-caps bold 30px/1 system-ui;
+    /*font-size: xx-large;*/
     line-height: 1;
 }
 
@@ -158,8 +167,9 @@
     color: #000000;
     border-radius: 5px;
     border: 2px solid #bcbcbc;
-    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-    font-size: xx-large;
+    /*font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;*/
+    font: small-caps bold 27px/1 system-ui;
+    /*font-size: xx-large;*/
     line-height: 1;
     /*height: 80px;*/
     min-width: 80px;
@@ -174,8 +184,9 @@
     color: #000000;
     border-radius: 5px;
     border: 2px solid #bcbcbc;
-    font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;
-    font-size: xx-large;
+    /*font: 13px/20px "Lucida Grande", Tahoma, Verdana, sans-serif;*/
+    font: small-caps bold 30px/1 system-ui;
+    /*font-size: xx-large;*/
     line-height: 1;
     height: 40px;
 }
