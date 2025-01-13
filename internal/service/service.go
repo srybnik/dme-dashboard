@@ -121,11 +121,9 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	go func() {
 		defer s.wg.Done()
 
-		ticker := time.NewTicker(5100 * time.Millisecond)
+		ticker := time.NewTicker(3 * time.Millisecond)
 		defer ticker.Stop()
 
-		tickerRange := time.NewTicker(220 * time.Millisecond)
-		defer tickerRange.Stop()
 		for {
 			select {
 			case <-ctx.Done():
@@ -135,12 +133,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			}
 
 			for _, item := range s.itemIDs {
-				if !item.Wait {
-					select {
-					case <-ctx.Done():
-						return
-					case <-tickerRange.C:
-					}
+				if !item.Wait && !item.Blinked {
 					item.SendMsgCurrentValue()
 				}
 			}
