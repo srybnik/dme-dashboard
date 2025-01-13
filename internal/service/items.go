@@ -28,9 +28,9 @@ type Item struct {
 	Value    bool
 	HasErr   bool
 
-	Wait    bool
-	Blinked bool
-	mu      sync.Mutex
+	Wait  bool
+	Blink bool
+	mu    sync.Mutex
 
 	msgCh       chan models.Msg
 	signalCh    chan struct{}
@@ -73,7 +73,7 @@ func (c *Item) StartBlink(ctx context.Context) {
 		defer func() {
 			c.mu.Lock()
 			c.PreValue = c.Value
-			c.Blinked = false
+			c.Blink = false
 			c.mu.Unlock()
 			c.SendMsgCurrentValue()
 		}()
@@ -176,12 +176,10 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 			c.Wait = false
 
 			if c.Value == val && c.HasErr == err {
-				if c.stopBlink != nil {
-					c.stopBlink()
-				}
+				c.StopBlink()
 				bCtx, cancel := context.WithCancel(ctx)
 				c.stopBlink = cancel
-				c.Blinked = true
+				c.Blink = true
 				c.StartBlink(bCtx)
 			}
 		}

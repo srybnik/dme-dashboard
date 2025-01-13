@@ -121,7 +121,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 	go func() {
 		defer s.wg.Done()
 
-		ticker := time.NewTicker(3 * time.Millisecond)
+		ticker := time.NewTicker(3 * time.Second)
 		defer ticker.Stop()
 
 		for {
@@ -133,7 +133,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			}
 
 			for _, item := range s.itemIDs {
-				if !item.Wait && !item.Blinked {
+				if !item.Wait && !item.Blink {
 					item.SendMsgCurrentValue()
 				}
 			}
