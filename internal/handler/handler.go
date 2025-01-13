@@ -31,7 +31,6 @@ func (h *Handler) Ping(ctx echo.Context) error {
 
 func (h *Handler) RegisterHandlers(r *echo.Echo) {
 	r.Use(middleware.Recover())
-	//r.Use(mdw.LogMiddleware())
 	r.HideBanner = true
 	r.HidePort = true
 

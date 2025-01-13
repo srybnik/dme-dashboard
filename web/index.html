@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <link rel="shortcut icon" type="image/x-icon" href="static/icon.jpg">
     <title>DME-Dashboard</title>
-    <link href="static/body.css" rel="stylesheet" type="text/css">
-    <link href="static/switch.css" rel="stylesheet" type="text/css">
-    <link href="static/switch_vpp.css" rel="stylesheet" type="text/css">
-    <link href="static/imgbutton.css" rel="stylesheet" type="text/css">
-    <link href="static/div.css" rel="stylesheet" type="text/css">
-    <link href="static/grid.css" rel="stylesheet" type="text/css">
-    <link href="static/menu.css" rel="stylesheet" type="text/css">
-    <script src="static/body.js"></script>
+    <link href="static/body.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/switch.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/switch_vpp.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/imgbutton.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/div.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/grid.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <link href="static/menu.css?v={{.Version}}" rel="stylesheet" type="text/css">
+    <script src="static/body.js?v={{.Version}}"></script>
 </head>
 <body>
 
@@ -131,7 +131,7 @@
 
 
 <audio id="Signal">
-    <source src="static/sirena.mp3">
+    <source src="static/signal.mp3?v={{.Version}}">
 </audio>
 
 <script>
