@@ -99,18 +99,18 @@ function handle(str) {
 
 
 function startSignal() {
-    new Promise(() => {
+    // new Promise(() => {
         var s = document.getElementById("Signal");
         s.play()
-    });
+    // });
 }
 
 function stopSignal() {
-    new Promise(() => {
+    // new Promise(() => {
         var s = document.getElementById("Signal");
         s.pause()
         s.load()
-    });
+    // });
 }
 
 function renderVPP() {
