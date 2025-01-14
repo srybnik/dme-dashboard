@@ -28,6 +28,9 @@ type Item struct {
 	Value    bool
 	HasErr   bool
 
+	init      bool
+	initValue bool
+
 	Wait  bool
 	Blink bool
 	mu    sync.Mutex
@@ -74,6 +77,7 @@ func (c *Item) StartBlink(ctx context.Context) {
 			c.mu.Lock()
 			c.PreValue = c.Value
 			c.Blink = false
+			c.init = false
 			c.mu.Unlock()
 			c.SendMsgCurrentValue()
 		}()
@@ -127,12 +131,28 @@ func (c *Item) StopBlink() {
 	}
 }
 
+func (c *Item) StopWait() {
+	if c.stopWait != nil {
+		c.stopWait()
+	}
+}
+
 func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	if c.IsInverse {
 		val = !val
+	}
+
+	if c.init && c.initValue == val && !err {
+		c.Value = c.initValue
+		c.PreValue = c.initValue
+		c.HasErr = false
+		c.StopWait()
+		c.StopBlink()
+		c.init = false
+		return
 	}
 
 	if c.Value == val && c.HasErr == err {
@@ -146,17 +166,14 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 		return
 	}
 
-	if c.stopWait != nil {
-		c.stopWait()
-	}
-	waitCtx, cancel := context.WithCancel(ctx)
-	c.stopWait = cancel
+	c.StopWait()
 
 	if c.PreValue == val && c.HasErr == err {
 		return
 	}
 
-	//if !c.Wait {
+	waitCtx, cancel := context.WithCancel(ctx)
+	c.stopWait = cancel
 	c.Wait = true
 
 	go func() {
@@ -181,10 +198,10 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 				c.stopBlink = cancel
 				c.Blink = true
 				c.StartBlink(bCtx)
+				c.repo.SetValue(c.ID, c.Value)
 			}
 		}
 	}()
-	//}
 }
 
 func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
@@ -211,8 +228,11 @@ func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
 }
 
 func (c *Item) Init(ctx context.Context) {
-	c.Value = c.repo.GetValue(c.ID)
-	c.PreValue = c.Value
+	c.initValue = c.repo.GetValue(c.ID)
+	c.mu.Lock()
+	c.Value = c.initValue
+	c.init = true
+	c.mu.Unlock()
 
 	msg := mcp.PinValue{
 		Device: c.BoardID,

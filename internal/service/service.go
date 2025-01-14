@@ -131,7 +131,6 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			case <-s.refreshCh:
 			case <-ticker.C:
 			}
-
 			for _, item := range s.itemIDs {
 				if !item.Wait && !item.Blink {
 					item.SendMsgCurrentValue()
