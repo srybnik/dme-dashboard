@@ -31,15 +31,17 @@ type Item struct {
 	init      bool
 	initValue bool
 
-	Wait  bool
-	Blink bool
-	mu    sync.Mutex
+	mu sync.Mutex
 
 	msgCh       chan models.Msg
 	signalCh    chan struct{}
 	mcpOutputCh chan mcp.PinValue
-	stopBlink   context.CancelFunc
-	stopWait    context.CancelFunc
+
+	bCtx      context.Context
+	stopBlink context.CancelFunc
+
+	waitCtx  context.Context
+	stopWait context.CancelFunc
 
 	repo Repo
 }
@@ -76,7 +78,6 @@ func (c *Item) StartBlink(ctx context.Context) {
 		defer func() {
 			c.mu.Lock()
 			c.PreValue = c.Value
-			c.Blink = false
 			c.init = false
 			c.mu.Unlock()
 			c.SendMsgCurrentValue()
@@ -131,9 +132,33 @@ func (c *Item) StopBlink() {
 	}
 }
 
+func (c *Item) IsBlink() bool {
+	if c.bCtx == nil {
+		return false
+	}
+	select {
+	case <-c.bCtx.Done():
+		return false
+	default:
+		return true
+	}
+}
+
 func (c *Item) StopWait() {
 	if c.stopWait != nil {
 		c.stopWait()
+	}
+}
+
+func (c *Item) IsWait() bool {
+	if c.waitCtx == nil {
+		return false
+	}
+	select {
+	case <-c.waitCtx.Done():
+		return false
+	default:
+		return true
 	}
 }
 
@@ -149,9 +174,9 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 		c.Value = c.initValue
 		c.PreValue = c.initValue
 		c.HasErr = false
+		c.init = false
 		c.StopWait()
 		c.StopBlink()
-		c.init = false
 		return
 	}
 
@@ -173,30 +198,27 @@ func (c *Item) SetFromMcpValue(ctx context.Context, val bool, err bool) {
 	}
 
 	waitCtx, cancel := context.WithCancel(ctx)
+	c.waitCtx = waitCtx
 	c.stopWait = cancel
-	c.Wait = true
 
 	go func() {
+		defer cancel()
 		timer := time.NewTimer(c.dur)
 		defer timer.Stop()
 		select {
 		case <-ctx.Done():
 			return
 		case <-waitCtx.Done():
-			c.mu.Lock()
-			defer c.mu.Unlock()
-			c.Wait = false
 			return
 		case <-timer.C:
 			c.mu.Lock()
 			defer c.mu.Unlock()
-			c.Wait = false
 
 			if c.Value == val && c.HasErr == err {
 				c.StopBlink()
 				bCtx, cancel := context.WithCancel(ctx)
+				c.bCtx = bCtx
 				c.stopBlink = cancel
-				c.Blink = true
 				c.StartBlink(bCtx)
 				c.repo.SetValue(c.ID, c.Value)
 			}

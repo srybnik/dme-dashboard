@@ -132,7 +132,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			case <-ticker.C:
 			}
 			for _, item := range s.itemIDs {
-				if !item.Wait && !item.Blink {
+				if !item.IsWait() && !item.IsBlink() {
 					item.SendMsgCurrentValue()
 				}
 			}
@@ -216,7 +216,7 @@ func (s *Service) Start(ctx context.Context, cancelFunc context.CancelFunc) {
 			case <-ticker.C:
 				var hasErr bool
 				for _, item := range s.itemIDs {
-					if item.HasErr && !item.Wait {
+					if item.HasErr && !item.IsWait() {
 						hasErr = true
 						break
 					}
