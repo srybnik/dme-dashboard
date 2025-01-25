@@ -76,10 +76,8 @@ func NewItem(id int,
 func (c *Item) StartBlink(ctx context.Context) {
 	go func() {
 		defer func() {
-			c.mu.Lock()
 			c.PreValue = c.Value
 			c.init = false
-			c.mu.Unlock()
 			c.SendMsgCurrentValue()
 		}()
 
@@ -251,10 +249,9 @@ func (c *Item) SetToMcpValue(ctx context.Context, val bool) {
 
 func (c *Item) Init(ctx context.Context) {
 	c.initValue = c.repo.GetValue(c.ID)
-	c.mu.Lock()
-	c.Value = c.initValue
 	c.init = true
-	c.mu.Unlock()
+	c.Value = c.initValue
+	c.PreValue = c.initValue
 
 	msg := mcp.PinValue{
 		Device: c.BoardID,
